@@ -1,0 +1,1 @@
+from PokemonBase import *
