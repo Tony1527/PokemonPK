@@ -587,9 +587,9 @@ class MirrorMove(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('MirrorMove'))
 
 
-class SelfDesctruct(SkillBase):
+class SelfDestruct(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('selfdesctruct'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('selfdestruct'))
 
 
 class EggBomb(SkillBase):

@@ -89,7 +89,8 @@ class PokemonPKError(Exception):
     pass
         
         
-
+def GetObjByChineseName(chinese_name):
+    return g_globals[g_c2e[chinese_name]]()
         
     
     

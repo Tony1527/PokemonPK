@@ -6,7 +6,7 @@ try:
         NORMAL=1,
         FIGHT=2,
         FLYING=4,
-        POISION=8,
+        POISON=8,
         GROUND=16,
         ROCK=32,
         BUG=64,
@@ -26,7 +26,7 @@ try:
                 return '格斗'
             elif type==TypeEnum.FLYING:
                 return '飞行'
-            elif type==TypeEnum.POISION:
+            elif type==TypeEnum.POISON:
                 return '毒'
             elif type==TypeEnum.GROUND:
                 return '地'

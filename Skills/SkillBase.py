@@ -47,6 +47,7 @@ class SkillBase(Singleton):
         if skill_series['Hit']!='-':
             self._hit = int(skill_series['Hit'])
         self._pp=int(skill_series['PP'])
+        self.pp=self._pp
 
     # def __init__(self,skill_series,obj_of_action=ObjOfAction.TAR,info=''):
         
@@ -122,7 +123,7 @@ class SkillBase(Singleton):
         print(self.GetInfo())
 
     def GetInfo(self):
-        return '{}      描述:{}      属性:{}     PP:{}   威力:{}     命中率:{}'.format(self._name,self._info,TypeEnum.ToChinese(self._type),self.pp,self._power,self._hit)
+        return '{}      描述:{}      属性:{}     PP:{}   威力:{}     命中率:{}      剩余PP:{}'.format(self._name,self._info,TypeEnum.ToChinese(self._type),self._pp,self._power,self._hit,self.pp)
         
     def GetName(self):
         return self._name

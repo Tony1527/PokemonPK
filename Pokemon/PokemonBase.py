@@ -2,40 +2,37 @@ import numpy as np
 from pk_utility import *
 from Stat import *
 class PokemonBase(object):
-    hp=0
-    attack=0
-    defense=0
-    special_attack=0
-    special_defense=0
-    speed=0
-    level=0
-    _stat=None
-    _indiv_values=None
-    _skills=[]
-    _type=None
-    _name=''
-    _hp=0
-    _attack=0
-    _defense=0
-    _special_attack=0
-    _special_defense=0
-    _speed=0
-
     def __init__(self,stat,indiv_values,type=TypeEnum.NORMAL,name='???'):
+        self.hp=0
+        self.attack=0
+        self.defense=0
+        self.special_attack=0
+        self.special_defense=0
+        self.speed=0
+        self.level=0
+        self._stat=None
+        self._indiv_values=None
+        self._skills=[]
+        self._type=None
+        self._name=''
+        self._hp=0
+        self._attack=0
+        self._defense=0
+        self._special_attack=0
+        self._special_defense=0
+        self._speed=0
+
+
         self._stat=stat
         self._indiv_values=indiv_values
-        # self.hp=hp
-        # self.attack=attack
-        # self.defense=defense
-        # self.special_attack=special_attack
-        # self.special_defense=special_defense
-        # self.speed=speed
-        # self.level = level
 
         self._type=type
         self._name=name
     
     def Grow(self,level):
+        '''
+            level up and increase stat of pokemon
+        '''
         if level<self.level:
             raise PokemonPKError()
         else:
@@ -51,12 +48,12 @@ class PokemonBase(object):
     #学习技能
     def LearnSkills(self,skills=[],auto_learn=False,auto_lu_num=2,auto_tm_num=2):
         global g_c2e
-        for i  in range(len(skills)):
-            skills[i] = skills[i]()
+        skills = [GetObjByChineseName(chinese_name) for chinese_name in skills]
 
         if not auto_learn:
             for skill in skills:
-                print('you have learned',skill)
+                skill_name = skill.GetName()
+                print('you have learned',skill_name)
 
                 #如果技能数小于4，直接学会技能，否则需要进行学习判断
                 if len(self._skills)<4:
@@ -70,9 +67,9 @@ class PokemonBase(object):
                         choose = input('your choice:')
                         choose_idx = g_d5i[choose]
                         if ToBeSure('forget '+self._skills[choose_idx]):
-                            print('You have forgotten',self._skills[choose_idx])
+                            print('You have forgotten',self._skills[choose_idx].GetName())
                             if choose_idx<=3:
-                                print('And learned',skill)
+                                print('And learned',skill_name)
                                 self._skills[choose_idx]=skill
                             
                             self._skills.pop()
@@ -116,13 +113,13 @@ class PokemonBase(object):
                     LU_end=i
                     break
             LU_start=int(LU_end*learn_limit)
-            LU = [g_globals[g_c2e[chinese_name]]() for chinese_name in LU['招式'][LU_start:LU_end]]
+            LU = [GetObjByChineseName(chinese_name) for chinese_name in LU['招式'][LU_start:LU_end]]
             LU.reverse()
             random_add_skills(self,LU,auto_lu_num)
 
 
             #learn auto_tm_num trick machine skills
-            TM = [g_globals[g_c2e[chinese_name]]() for chinese_name in TM['招式']]
+            TM = [GetObjByChineseName(chinese_name) for chinese_name in TM['招式']]
             np.random.shuffle(TM)
             random_add_skills(self,TM,auto_tm_num)
                 
