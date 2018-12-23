@@ -12,11 +12,13 @@ from  pk_enums  import *
 
 from PokemonPK import pk_path
 
-#从str到int的字典switch
+#从str到+1 int的字典switch
 g_d4i = {'1':0,'2':1,'3':2,'4':3}
 g_d5i = {'1':0,'2':1,'3':2,'4':3,'5':4}
 g_d2i = {'1':0,'2':1}
 g_d2b = {'1':True,'2':False}
+g_c2e = {}
+g_globals={}
 
 #通用的Bool条件判断
 def ToBeSure(msg=''):
@@ -83,6 +85,8 @@ class TypeChart(Singleton):
 
        return (effect,effect_str)
 
+class PokemonPKError(Exception):
+    pass
         
         
 

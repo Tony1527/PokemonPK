@@ -27,11 +27,12 @@ class SkillBase(Singleton):
     _power = 0
     _hit = 0
     _category=False
-    _info = ''
+    _info = '-'
     _name = ''
+    _pp=0
 
     pp = 0
-    def __init__(self,skill_series=None,name='',obj_of_action=ObjOfAction.TAR,info=''):
+    def __init__(self,skill_series=None,name='',obj_of_action=ObjOfAction.TAR,info='-'):
         if not isinstance(skill_series,pd.Series):
             raise ValueError
         
@@ -45,7 +46,7 @@ class SkillBase(Singleton):
         self._name = skill_series['ChineseName']
         if skill_series['Hit']!='-':
             self._hit = int(skill_series['Hit'])
-        self.pp=int(skill_series['PP'])
+        self._pp=int(skill_series['PP'])
 
     # def __init__(self,skill_series,obj_of_action=ObjOfAction.TAR,info=''):
         
@@ -118,13 +119,10 @@ class SkillBase(Singleton):
         pass
 
     def Print(self):
-        print("描述:",self._name,self._info)
-        print('属性:',TypeEnum.ToChinese(self._type))
-        print('PP:',self.pp)
-        if self._power!=0:
-            print('威力:',self._power)
-        if self._hit!=0:
-            print('命中率:',self._hit)
+        print(self.GetInfo())
+
+    def GetInfo(self):
+        return '{}      描述:{}      属性:{}     PP:{}   威力:{}     命中率:{}'.format(self._name,self._info,TypeEnum.ToChinese(self._type),self.pp,self._power,self._hit)
         
     def GetName(self):
         return self._name
@@ -134,11 +132,16 @@ class SkillChart(Singleton):
     _skill_chart=None
     _skill_num=0
     def __init__(self):
+        global g_c2e
         self._skill_chart=pd.read_csv(pk_path+'StoreFiles/SkillChart.csv')
+        skills_c2e=dict(zip(self._skill_chart['ChineseName'],self._skill_chart['EnglishName']))
+        g_c2e.update(skills_c2e)
         self._skill_num=len(self._skill_chart)
         skill_index = self._skill_chart['EnglishName'].values
         for i in range(len(skill_index)):
             skill_index[i] = skill_index[i].lower()
+        
+        
         self._skill_chart.index=skill_index
     
     @classmethod
@@ -147,6 +150,10 @@ class SkillChart(Singleton):
         # print(skill_name)
         instance = SkillChart.GetInstance()
         return instance._skill_chart.ix[skill_name]
+
+    @staticmethod
+    def LoadSkillChart():
+        SkillChart.GetInstance()
 
 class SkillFactory:
     def __init__(self):
@@ -157,4 +164,6 @@ class SkillFactory:
         if not hasattr(class_obj,'GetInstance'):
             raise TypeError
         return class_obj.GetInstance()
-    
+
+
+SkillChart.LoadSkillChart()

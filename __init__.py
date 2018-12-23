@@ -12,3 +12,5 @@ sys.path.append(pk_path+"StoreFiles")
 from PokemonPK.Global import *
 from PokemonPK.Pokemon import *
 from PokemonPK.Skills import *
+
+g_globals.update(globals())

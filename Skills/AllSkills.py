@@ -16,7 +16,7 @@ class CometPunch(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('CometPunch'))
 
-class MegaPush(SkillBase):
+class MegaPunch(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('MegaPunch'))
 
@@ -115,7 +115,7 @@ class DoubleKick(SkillBase):
 
 class MegaKick(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('megekick'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('megakick'))
 
 
 class JumpKick(SkillBase):
@@ -527,7 +527,7 @@ class Minimize(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('minimize'))
 
 
-class Smokesreen(SkillBase):
+class Smokescreen(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('smokescreen'))
 
@@ -711,7 +711,7 @@ class SkyAttack(SkillBase):
 
 class Transform(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('transfrom'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('transform'))
 
 
 class Bubble(SkillBase):
@@ -744,7 +744,7 @@ class Splash(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('splash'))
 
 
-class AcidArmore(SkillBase):
+class AcidArmor(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('acidarmor'))
 
