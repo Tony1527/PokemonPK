@@ -1,9 +1,7 @@
-Stat,,,Range,
-,,,At Lv. 50,At Lv. 100
-HP:,90,,150 - 197,290 - 384
-Attack:,70,,67 - 134,130 - 262
-Defense:,80,,76 - 145,148 - 284
-Sp.Atk:,70,,67 - 134,130 - 262
-Sp.Def:,95,,90 - 161,175 - 317
-Speed:,70,,67 - 134,130 - 262
-,,,,
+Stat,Value
+HP,90
+Attack,70
+Defense,80
+Sp.Atk,70
+Sp.Def,95
+Speed,70

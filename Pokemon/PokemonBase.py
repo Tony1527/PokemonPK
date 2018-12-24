@@ -2,16 +2,9 @@ import numpy as np
 from pk_utility import *
 from Stat import *
 class PokemonBase(object):
-    def __init__(self,stat,indiv_values,type=TypeEnum.NORMAL,name='???'):
-        self.hp=0
-        self.attack=0
-        self.defense=0
-        self.special_attack=0
-        self.special_defense=0
-        self.speed=0
-        self.level=0
-        self._stat=None
-        self._indiv_values=None
+    def __init__(self,stat,indiv_values,type=TypeEnum.NORMAL,name='???',level=1):
+        self.level=level
+        
         self._skills=[]
         self._type=None
         self._name=''
@@ -22,12 +15,43 @@ class PokemonBase(object):
         self._special_defense=0
         self._speed=0
 
-
         self._stat=stat
         self._indiv_values=indiv_values
-
+        self.stage=Stage()
         self._type=type
         self._name=name
+        self.Grow(level)
+        self.ResetStat()
+        
+
+
+    def ResetStat(self):
+        self.hp=self._hp
+        self.attack=self._attack
+        self.defense=self._defense
+        self.special_attack=self._special_attack
+        self.special_defense=self._special_defense
+        self.speed=self._speed
+        self.stage.Clear()
+        self.status_cond=StatusCondEnum.NORMAL
+
+    def HP(self):
+        return self._hp
+
+    def Attack(self):
+        return self._attack
+
+    def Defense(self):
+        return self._defense
+    
+    def SpecialAttack(self):
+        return self._special_attack
+
+    def SpecialDefense(self):
+        return self._special_defense
+
+    def Speed(self):
+        return self._speed
     
     def Grow(self,level):
         '''

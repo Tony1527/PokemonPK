@@ -63,4 +63,57 @@ class CategoryEnum(IntEnum):
         elif category==SPECIAL:
             return '特殊'
 
+class StatusCondEnum(IntEnum):
+    NORMAL=0,
+    BURN=1,
+    FREEZE=2,
+    PARALYSIS=3,
+    POISON=4,
+    BADLYPOISON=5,
+    SLEEP=6
+    @classmethod
+    def IsNormal(cls,stat_condition):
+        return stat_condition==NORMAL
 
+
+    @classmethod
+    def ToChinese(cls,stat_condition):
+        if stat_condition==HEALTHY:
+            return '正常'
+        elif stat_condition==BURN:
+            return '烧伤'
+        elif stat_condition==FREEZE:
+            return '冻伤'
+        elif stat_condition==PARALYSIS:
+            return '麻痹'
+        elif stat_condition==POISON:
+            return '中毒'
+        elif stat_condition==BADLYPOISON:
+            return '剧毒'
+        elif stat_condition==SLEEP:
+            return '睡觉'
+
+class StageEnum(IntEnum):
+    ATTACK=0,
+    DEFENSE=1,
+    SPECIAL_ATTACK=2,
+    SPECIAL_DEFENSE=3,
+    SPEED=4,
+    HIT=5,
+    DODGE=6
+    @classmethod
+    def ToChinese(cls,value):
+        if value==ATTACK:
+            return '攻击力'
+        elif value==DEFENSE:
+            return '防御力'
+        elif value==SPECIAL_ATTACK:
+            return '特攻'
+        elif value==SPECIAL_DEFENSE:
+            return '特防'
+        elif value==SPEED:
+            return '速度'
+        elif value==HIT:
+            return '命中率'
+        elif value==DODGE:
+            return '闪避'

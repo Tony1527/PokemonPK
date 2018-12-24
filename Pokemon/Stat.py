@@ -1,5 +1,9 @@
 from pk_utility import *
+from pk_enums import *
 
+'''
+    种族值
+'''
 class Stat(object):
     hp=0
     attack=0
@@ -20,7 +24,9 @@ class Stat(object):
         self.special_defense = data.loc['Sp.Def']['Value']
         self.speed = data.loc['Speed']['Value']
 
-
+'''
+    个体值
+'''
 class IndivValues(object):
     hp=0
     attack=0
@@ -42,4 +48,79 @@ class IndivValues(object):
             self.hp = self.hp+2
         if special%2:
             self.hp = self.hp+1
+
+'''
+    能力阶级
+'''
+class Stage(object):
+    def __init__(self):
+        self.Clear()
+
+    def Up(self,stage_enum,value):
+        up_value = value+self._stage[stage_enum]
+        if up_value<=6:
+            self._stage[stage_enum]=up_value
+            return value
+        elif self._stage!=6:
+            self._stage[stage_enum]=6
+            return value
+        else :
+            return 0
+
+    def Down(self,stage_enum,value):
+        up_value = self._stage[stage_enum]-value
+        if up_value>=-6:
+            self._stage[stage_enum]=up_value
+            return -value
+        elif self._stage!=-6:
+            self._stage[stage_enum]=-6
+            return -value
+        else :
+            return 0
+
+    def Get(self,stage_enum):
+        if stage_enum>=len(self._stage):
+            raise PokemonPKError()
+        if self._stage[stage_enum]<0:
+            return 2/self._stage[stage_enum]
+        elif self._stage[stage_enum]==0:
+            return 1
+        else:
+            return self._stage[stage_enum]/2
+
+        
+
+    def Clear(self):
+        self._stage=[0,0,0,0,0,0,0]
+
+    @classmethod
+    def ToChinese(cls,stage_enum,value):
+
+        change_mode=''
+        if value==1:
+            change_mode= '提高了!'
+        elif value==2:
+            change_mode= '大幅提高了!'
+        elif value<=6 and value>=3:
+            change_mode= '巨幅提高了!'
+        elif value==-1:
+            change_mode= '降低了!'
+        elif value==-2:
+            change_mode= '大幅降低了!'
+        elif value<=-3 and value>=-6:
+            change_mode= '巨幅降低了!'
+        elif value==0:
+            change_mode= '似乎没有发生变化'
+        return StageEnum.ToChinese(stage_enum)+change_mode
+        
+        
+        
+        
+
+
+
+        
+        
+        
+        
         

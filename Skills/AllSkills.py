@@ -386,6 +386,10 @@ class SleepPowder(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('SleepPowder'))
 
+    def ApplyTargetAblity(self,target):
+        target.stat_condition=StatusCondition.SLEEP
+
+
 
 class PetalDance(SkillBase):
     def __init__(self):

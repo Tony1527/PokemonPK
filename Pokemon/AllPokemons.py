@@ -58,7 +58,7 @@ class Dragonite(PokemonBase):
         indiv_values=IndivValues()
         PokemonBase.__init__(self,stat,indiv_values,type=TypeEnum.DRAGON+TypeEnum.FLYING,name=name)
 
-class Dragonite(PokemonBase):
+class Gyarados(PokemonBase):
     def __init__(self):
         name='暴鲤龙'
         file_stats=pk_path+'StoreFiles/'+name+'/Stat.csv'
@@ -110,6 +110,13 @@ pokemons_dir={
     '化石翼龙':'Aerodactyl',
     '水箭龟':'Blastoise',
     '皮卡丘':'Pikachu',
+    '刺甲贝':'Cloyster',
+    '乘龙':'Lapras',
+    '快龙':'Dragonite',
+    '哈克龙':'Dragonair',
+    '白海狮':'Dewgong',
+    '暴鲤龙':'Gyarados'
+
 }
 g_c2e.update(pokemons_dir)
 del pokemons_dir

@@ -18,7 +18,18 @@ except ValueError as e:
     print(e)
 
 
-
+g_skill_hit={
+    100:255,
+    95:242,
+    90:229,
+    85:216,
+    80:204,
+    75:191,
+    70:178,
+    60:153,
+    55:140,
+    50:127
+}
 
 
 class SkillBase(Singleton):
@@ -49,49 +60,58 @@ class SkillBase(Singleton):
         self._pp=int(skill_series['PP'])
         self.pp=self._pp
 
-    # def __init__(self,skill_series,obj_of_action=ObjOfAction.TAR,info=''):
-        
-    #     self.__init__(skill_series['ChineseName'],obj_of_action)
+    
 
     def Apply(self,src=None,target=None,weather=None):
         if not (isinstance(src,PokemonBase) and isinstance(target,PokemonBase)):
             raise ValueError('src or target must be derived from SkillBase')
+        self.pp=self.pp-1
         print('{}使用{}'.format(src.GetName(),self._name))
 
-        if self._obj_of_action & ObjOfAction.SRC:
-            self.ApplySrc(src,target,weather)
-        if self._obj_of_action & ObjOfAction.TAR:
-            self.ApplyTarget(src,target,weather)
-        if self._obj_of_action & ObjOfAction.SRC_ABL:
-            self.ApplySrcAblity(src)
-        if self._obj_of_action & ObjOfAction.TAR_ABL:
-            self.ApplySrcAblity(target)
-        if self._obj_of_action & ObjOfAction.WEATHER:
-            self.ApplyWeather(weather)
+        if self._IsHit(src,target):
+            if self._obj_of_action & ObjOfAction.SRC:
+                self.ApplySrc(src,target,weather)
+            if self._obj_of_action & ObjOfAction.TAR:
+                self.ApplyTarget(src,target,weather)
+            if self._obj_of_action & ObjOfAction.SRC_ABL:
+                self.ApplySrcAblity(src)
+            if self._obj_of_action & ObjOfAction.TAR_ABL:
+                self.ApplySrcAblity(target)
+            if self._obj_of_action & ObjOfAction.WEATHER:
+                self.ApplyWeather(weather)
+        else:
+            print('{}躲开了'.format(target.GetName()))
 
-        
+    def _IsHit(self,src,target):
+        rand_value = np.random.randint(1,256)
+        hit_value=g_skill_hit[self._hit]*src.stage.Get(StageEnum.HIT)/target.stage.Get(StageEnum.DODGE)
+        return rand_value<hit_value
 
     def DamageCal(self,src,target,weather):
         if self._category==CategoryEnum.PHYSICS:
-            A_div_D = src.attack / target.defense
+            A_div_D = src.attack*src.stage.Get(StageEnum.ATTACK) / (target.defense*target.stage.Get(StageEnum.DEFENSE))
         elif self._category == CategoryEnum.SPECIAL:
-            A_div_D = src.special_attack / target.special_defense
+            A_div_D = src.special_attack*src.stage.Get(StageEnum.SPECIAL_ATTACK) / (target.special_defense*target.stage.Get(StageEnum.SPECIAL_DEFENSE))
 
         #属性相克系数
         modifier,effect_str = TypeChart.TypeVSType(self._type,target.GetType())
         #主属性与技能属性相同
         if src.GetType()==self._type:
             modifier = modifier*1.5
+        addition=np.random.randint(85,101)/100
         #击中要害
         #TODO
-        damage = int((((2*src.level/5+2)*self._power*A_div_D)/50+2)*modifier)
+        
+        damage = int((((2*src.level/5+2)*self._power*A_div_D)/50+2)*modifier*addition)
 
         cnt=0
         delay_val=50
         while delay_val<damage:
             print('{}...'.format(delay_val))
             delay_val = delay_val+10
-            time.sleep(1)
+            if delay_val>=target.hp:
+                break
+            time.sleep(0.8)
 
         print('{}受到了{}点伤害'.format(target.GetName(),damage))
         print('{}'.format(effect_str))
