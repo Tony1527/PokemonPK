@@ -72,26 +72,41 @@ class StatusCondEnum(IntEnum):
     BADLYPOISON=5,
     SLEEP=6
     @classmethod
-    def IsNormal(cls,stat_condition):
-        return stat_condition==NORMAL
+    def IsNormal(cls,status_cond):
+        return status_cond==StatusCondEnum.NORMAL
 
 
     @classmethod
     def ToChinese(cls,stat_condition):
-        if stat_condition==HEALTHY:
+        if stat_condition==StatusCondEnum.NORMAL:
             return '正常'
-        elif stat_condition==BURN:
+        elif stat_condition==StatusCondEnum.BURN:
             return '烧伤'
-        elif stat_condition==FREEZE:
+        elif stat_condition==StatusCondEnum.FREEZE:
             return '冻伤'
-        elif stat_condition==PARALYSIS:
+        elif stat_condition==StatusCondEnum.PARALYSIS:
             return '麻痹'
-        elif stat_condition==POISON:
+        elif stat_condition==StatusCondEnum.POISON:
             return '中毒'
-        elif stat_condition==BADLYPOISON:
+        elif stat_condition==StatusCondEnum.BADLYPOISON:
             return '剧毒'
-        elif stat_condition==SLEEP:
+        elif stat_condition==StatusCondEnum.SLEEP:
             return '睡觉'
+
+class SpecialCondEnum(IntEnum):
+    CONFUSION=0
+    BOUND=1
+    FORCED=2
+
+    @classmethod
+    def ToChinese(cls,value):
+        if value==SpecialCondEnum.CONFUSION:
+            return '混乱'
+        elif value==SpecialCondEnum.BOUND:
+            return '被束缚'
+        elif value==SpecialCondEnum.FORCED:
+            return '强制攻击'
+
 
 class StageEnum(IntEnum):
     ATTACK=0,
@@ -103,17 +118,24 @@ class StageEnum(IntEnum):
     DODGE=6
     @classmethod
     def ToChinese(cls,value):
-        if value==ATTACK:
+        if value==StageEnum.ATTACK:
             return '攻击力'
-        elif value==DEFENSE:
+        elif value==StageEnum.DEFENSE:
             return '防御力'
-        elif value==SPECIAL_ATTACK:
+        elif value==StageEnum.SPECIAL_ATTACK:
             return '特攻'
-        elif value==SPECIAL_DEFENSE:
+        elif value==StageEnum.SPECIAL_DEFENSE:
             return '特防'
-        elif value==SPEED:
+        elif value==StageEnum.SPEED:
             return '速度'
-        elif value==HIT:
+        elif value==StageEnum.HIT:
             return '命中率'
-        elif value==DODGE:
+        elif value==StageEnum.DODGE:
             return '闪避'
+
+class PositionEnum(IntEnum):
+    PLAYGROUND=0,
+    UNDERGROUND=1,
+    SKY=2
+
+    

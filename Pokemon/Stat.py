@@ -48,7 +48,24 @@ class IndivValues(object):
             self.hp = self.hp+2
         if special%2:
             self.hp = self.hp+1
+'''
+    特殊状态
+'''
+class SpecialCond(object):
+    def __init__(self):
+        self.Clear()
+    
+    def Reduce(self):
+        for i in range(len(self._special_cond)):
+            if self._special_cond[i]>0:
+                self._special_cond[i]=self._special_cond[i]-1
 
+
+    def Get(self,special_cond_enum):
+        return self._special_cond[special_cond_enum]
+
+    def Clear(self):
+        self._special_cond=[0,0,0]
 '''
     能力阶级
 '''
@@ -60,33 +77,33 @@ class Stage(object):
         up_value = value+self._stage[stage_enum]
         if up_value<=6:
             self._stage[stage_enum]=up_value
-            return value
-        elif self._stage!=6:
+        elif self._stage[stage_enum]!=6:
             self._stage[stage_enum]=6
-            return value
         else :
-            return 0
+            value=0
+        return self.ToChinese(stage_enum,value)
 
     def Down(self,stage_enum,value):
-        up_value = self._stage[stage_enum]-value
-        if up_value>=-6:
-            self._stage[stage_enum]=up_value
-            return -value
-        elif self._stage!=-6:
+        down_value = self._stage[stage_enum]-value
+        if down_value>=-6:
+            self._stage[stage_enum]=down_value
+            value= -value
+        elif self._stage[stage_enum]!=-6:
             self._stage[stage_enum]=-6
-            return -value
+            value= -value
         else :
-            return 0
+            value= 0
+        return self.ToChinese(stage_enum,value)
 
     def Get(self,stage_enum):
         if stage_enum>=len(self._stage):
             raise PokemonPKError()
         if self._stage[stage_enum]<0:
-            return 2/self._stage[stage_enum]
+            return 2/(2-self._stage[stage_enum])
         elif self._stage[stage_enum]==0:
             return 1
         else:
-            return self._stage[stage_enum]/2
+            return (2+self._stage[stage_enum])/2
 
         
 

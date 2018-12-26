@@ -31,6 +31,9 @@ g_skill_hit={
     50:127
 }
 
+g_special_critical_skills=[
+    '劈开','飞叶快刀','空手劈','蟹钳','旋风刀'
+]
 
 class SkillBase(Singleton):
     _obj_of_action=None
@@ -43,7 +46,8 @@ class SkillBase(Singleton):
     _pp=0
 
     pp = 0
-    def __init__(self,skill_series=None,name='',obj_of_action=ObjOfAction.TAR,info='-'):
+    is_ready=True
+    def __init__(self,skill_series=None,obj_of_action=ObjOfAction.TAR,info='-'):
         if not isinstance(skill_series,pd.Series):
             raise ValueError
         
@@ -59,34 +63,59 @@ class SkillBase(Singleton):
             self._hit = int(skill_series['Hit'])
         self._pp=int(skill_series['PP'])
         self.pp=self._pp
+        self.priority=0
+        self.SetDefault()
 
-    
+    def SetDefault(self):
+        self.is_ready=True
 
     def Apply(self,src=None,target=None,weather=None):
-        if not (isinstance(src,PokemonBase) and isinstance(target,PokemonBase)):
-            raise ValueError('src or target must be derived from SkillBase')
-        self.pp=self.pp-1
+        # if (src!=None and target!=None) and not (isinstance(src,PokemonBase) and isinstance(target,PokemonBase)):
+        #     raise ValueError('src or target must be derived from SkillBase')
+        
         print('{}使用{}'.format(src.GetName(),self._name))
-
+        if not self.PreApply(src,target,weather):
+            return
+        
         if self._IsHit(src,target):
-            if self._obj_of_action & ObjOfAction.SRC:
-                self.ApplySrc(src,target,weather)
-            if self._obj_of_action & ObjOfAction.TAR:
-                self.ApplyTarget(src,target,weather)
-            if self._obj_of_action & ObjOfAction.SRC_ABL:
+            target_damage=0
+            if  self._obj_of_action & ObjOfAction.SRC_ABL:
                 self.ApplySrcAblity(src)
-            if self._obj_of_action & ObjOfAction.TAR_ABL:
-                self.ApplySrcAblity(target)
-            if self._obj_of_action & ObjOfAction.WEATHER:
+                rest()
+            if self._obj_of_action & ObjOfAction.TAR:
+                target_damage = self.ApplyTarget(src,target,weather)
+                self.ApplyDamage(target,target_damage)
+                rest()
+            if  self._obj_of_action &ObjOfAction.SRC:
+                src_damage = self.ApplySrc(src,target_damage)
+                self.ApplyDamage(src,src_damage)
+                rest()
+            if  self._obj_of_action &ObjOfAction.TAR_ABL:
+                self.ApplyTargetAblity(target)
+                rest()
+            if  self._obj_of_action &ObjOfAction.WEATHER:
                 self.ApplyWeather(weather)
+                rest()
         else:
             print('{}躲开了'.format(target.GetName()))
+            self.SideEffect(src)
+            rest()
+        self.PostApply(src,target,weather)
+        print('==============')
 
     def _IsHit(self,src,target):
+        if self._hit==0:
+            return True
         rand_value = np.random.randint(1,256)
         hit_value=g_skill_hit[self._hit]*src.stage.Get(StageEnum.HIT)/target.stage.Get(StageEnum.DODGE)
         return rand_value<hit_value
-
+    def SideEffect(self,src):
+        pass
+    def PreApply(self,src,target,weather):
+        self.pp=self.pp-1
+        return True
+    def PostApply(self,src,target,weather):
+        pass
     def DamageCal(self,src,target,weather):
         if self._category==CategoryEnum.PHYSICS:
             A_div_D = src.attack*src.stage.Get(StageEnum.ATTACK) / (target.defense*target.stage.Get(StageEnum.DEFENSE))
@@ -98,37 +127,37 @@ class SkillBase(Singleton):
         #主属性与技能属性相同
         if src.GetType()==self._type:
             modifier = modifier*1.5
+
+        #额外项
         addition=np.random.randint(85,101)/100
         #击中要害
-        #TODO
+        if self._name in g_special_critical_skills:
+            is_critical_hit= np.random.rand()<src.GetStat().speed*4/256
+        else:
+            is_critical_hit= np.random.rand()<src.GetStat().speed/2/256
+
+
+        if is_critical_hit:
+            addition = addition*1.5
+            
         
         damage = int((((2*src.level/5+2)*self._power*A_div_D)/50+2)*modifier*addition)
 
-        cnt=0
-        delay_val=50
-        while delay_val<damage:
-            print('{}...'.format(delay_val))
-            delay_val = delay_val+10
-            if delay_val>=target.hp:
-                break
-            time.sleep(0.8)
-
-        print('{}受到了{}点伤害'.format(target.GetName(),damage))
-        print('{}'.format(effect_str))
-
+        
+        if is_critical_hit and not effect_str==u'似乎没有效果':
+            print('命中要害')
+        
+        if effect_str!='':
+            print('{}'.format(effect_str))
         return damage
 
-    def ApplySrc(self,src,target,weather):
-        src.hp = src.hp - self.DamageCal(src,target,weather)
-        if src.hp<=0:
-            src.hp=0
-            print('{}倒下了'.format(src.GetName()))
+    def ApplySrc(self,src,target_damage):
+        return 0
+        
 
     def ApplyTarget(self,src,target,weather):
-        target.hp = target.hp - self.DamageCal(src,target,weather)
-        if target.hp<=0:
-            target.hp=0
-            print('{}倒下了'.format(target.GetName()))
+        return self.DamageCal(src,target,weather)
+        
 
     def ApplySrcAblity(self,src):
         pass
@@ -139,6 +168,23 @@ class SkillBase(Singleton):
     def ApplyWeather(self,weather):
         pass
 
+    def CauseStatusCond(self,target,percent,status_cond):
+        if StatusCondEnum.IsNormal(target.status_cond) and np.random.rand()<percent:
+            target.status_cond = status_cond
+            print(target.GetName()+StatusCondEnum.ToChinese(status_cond)+"了")
+    def ApplyDamage(self,target,damage):
+        delay_val=50
+        while delay_val<damage:
+            print('{}...'.format(delay_val))
+            delay_val = delay_val+10
+            if delay_val>=target.hp:
+                break
+            rest()
+        print('{}受到了{}点伤害'.format(target.GetName(),damage))
+        target.hp = target.hp - damage
+        if target.hp<=0:
+            target.hp=0
+            print('{}倒下了'.format(target.GetName()))
     def Print(self):
         print(self.GetInfo())
 

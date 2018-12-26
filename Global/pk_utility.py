@@ -81,7 +81,7 @@ class TypeChart(Singleton):
        elif effect<1 and effect >0:
            effect_str = u'效果一般'
        elif effect==0:
-           effect_str = u'没有效果'
+           effect_str = u'似乎没有效果'
 
        return (effect,effect_str)
 
@@ -93,7 +93,8 @@ def GetObjByChineseName(chinese_name):
     return g_globals[g_c2e[chinese_name]]()
         
     
-    
+def rest():
+    time.sleep(0.8) 
 
 
 

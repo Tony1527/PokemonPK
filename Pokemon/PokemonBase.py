@@ -34,6 +34,8 @@ class PokemonBase(object):
         self.speed=self._speed
         self.stage.Clear()
         self.status_cond=StatusCondEnum.NORMAL
+        self.is_playing=False
+        self.position=PositionEnum.PLAYGROUND
 
     def HP(self):
         return self._hp
@@ -52,6 +54,18 @@ class PokemonBase(object):
 
     def Speed(self):
         return self._speed
+
+    def GetType(self):
+        return self._type
+
+    def GetName(self):
+        return self._name
+
+    def SetName(self,name):
+        self._name = name
+
+    def GetStat(self):
+        return self._stat
     
     def Grow(self,level):
         '''
@@ -161,14 +175,7 @@ class PokemonBase(object):
     def PrintInfo(self):
         print('{}\tLevel:{}\t\tHP:{}\t\tAttack:{}\t\tDefense:{}\t\tSpecialAttack:{}\t\tSpecialDefense:{}\t\tSpeed:{}'.format(self._name,self.level,self._hp,self._attack,self._defense,self._special_attack,self._special_defense,self._speed))
 
-    def GetType(self):
-        return self._type
-
-    def GetName(self):
-        return self._name
-
-    def SetName(self,name):
-        self._name = name
+   
 
 
 # k = PokemonBase()
