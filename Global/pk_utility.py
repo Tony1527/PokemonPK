@@ -94,7 +94,7 @@ def GetObjByChineseName(chinese_name):
         
     
 def rest():
-    time.sleep(0.8) 
+    time.sleep(0.5) 
 
 
 

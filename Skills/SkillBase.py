@@ -75,6 +75,8 @@ class SkillBase(Singleton):
         
         print('{}使用{}'.format(src.GetName(),self._name))
         if not self.PreApply(src,target,weather):
+            rest()
+            print('==============')
             return
         
         if self._IsHit(src,target):
@@ -98,7 +100,7 @@ class SkillBase(Singleton):
                 rest()
         else:
             print('{}躲开了'.format(target.GetName()))
-            self.SideEffect(src)
+            self.SideEffect(src,target)
             rest()
         self.PostApply(src,target,weather)
         print('==============')
@@ -109,7 +111,7 @@ class SkillBase(Singleton):
         rand_value = np.random.randint(1,256)
         hit_value=g_skill_hit[self._hit]*src.stage.Get(StageEnum.HIT)/target.stage.Get(StageEnum.DODGE)
         return rand_value<hit_value
-    def SideEffect(self,src):
+    def SideEffect(self,src,target):
         pass
     def PreApply(self,src,target,weather):
         self.pp=self.pp-1
@@ -173,6 +175,8 @@ class SkillBase(Singleton):
             target.status_cond = status_cond
             print(target.GetName()+StatusCondEnum.ToChinese(status_cond)+"了")
     def ApplyDamage(self,target,damage):
+        if damage==0:
+            return
         delay_val=50
         while delay_val<damage:
             print('{}...'.format(delay_val))

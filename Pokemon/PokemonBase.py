@@ -17,7 +17,7 @@ class PokemonBase(object):
 
         self._stat=stat
         self._indiv_values=indiv_values
-        self.stage=Stage()
+        
         self._type=type
         self._name=name
         self.Grow(level)
@@ -32,8 +32,9 @@ class PokemonBase(object):
         self.special_attack=self._special_attack
         self.special_defense=self._special_defense
         self.speed=self._speed
-        self.stage.Clear()
+        self.stage=Stage()
         self.status_cond=StatusCondEnum.NORMAL
+        self.special_cond=SpecialCond()
         self.is_playing=False
         self.position=PositionEnum.PLAYGROUND
 

@@ -1,4 +1,6 @@
+# from Stat import *
 from SkillBase import *
+from SkillFamalies import *
 
 class Pound(SkillBase):
     def __init__(self):
@@ -9,47 +11,13 @@ class KarateChop(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('KarateChop'))
     
 
-class DoubleSlap(SkillBase):
+class DoubleSlap(MultiHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('DoubleSlap'))
-    def ApplyTarget(self,src,target,weather):
-        damage=0
-        hit_chance = np.random.rand()
-        round_num=2
-        if 1/6>hit_chance and hit_chance>=0:
-            round_num=5
-        elif 2/6>hit_chance and hit_chance>=1/6:
-            round_num=4
-        elif 4/6>hit_chance and hit_chance>=2/6:
-            round_num=3
-        elif 6/6>hit_chance and hit_chance>=4/6:
-            round_num=2
-        for i in range(round_num):
-            print('击中'+str(i+1)+'次')
-            damage = damage + self.DamageCal(src,target,weather)
-            rest()
-        return damage
+        MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('DoubleSlap'))
 
-class CometPunch(SkillBase):
+class CometPunch(MultiHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('CometPunch'))
-    def ApplyTarget(self,src,target,weather):
-        damage=0
-        hit_chance = np.random.rand()
-        round_num=2
-        if 1/6>hit_chance and hit_chance>=0:
-            round_num=5
-        elif 2/6>hit_chance and hit_chance>=1/6:
-            round_num=4
-        elif 4/6>hit_chance and hit_chance>=2/6:
-            round_num=3
-        elif 6/6>hit_chance and hit_chance>=4/6:
-            round_num=2
-        for i in range(round_num):
-            print('击中'+str(i+1)+'次')
-            damage = damage + self.DamageCal(src,target,weather)
-            rest()
-        return damage
+        MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('CometPunch'))
 
 class MegaPunch(SkillBase):
     def __init__(self):
@@ -89,38 +57,13 @@ class ViceGrip(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('ViceGrip'))
 
 
-class Guillotine(SkillBase):
+class Guillotine(MustKillSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('Guillotine'))
-    def ApplyTarget(self,src,target,weather):
-        damage=target.hp
-        return damage
-    def _IsHit(self,src,target):
-        if src.level<target.level:
-            return False
-        else:
-            return np.random.rand()<(30+src.level-target.level)/100
+        MustKillSkill.__init__(self,SkillChart.GetSkillSeries('Guillotine'))
 
-class RazorWind(SkillBase):
+class RazorWind(StockpileSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('RazorWind'))
-
-    def SetDefault(self):
-        self.is_ready=False
-
-    def PreApply(self,src,target,weather):
-        if self.is_ready==False:
-            print(src.GetName()+'蓄力中...')
-            self.is_ready=True
-            return False
-        self.pp=self.pp-1
-        return True
-
-    def PostApply(self,src,target,weather):
-        if self.is_ready==True:
-            self.is_ready=False
-        
-
+        StockpileSkill.__init__(self,SkillChart.GetSkillSeries('RazorWind'),discription='蓄力中')
 
 class SwordsDance(SkillBase):
     def __init__(self):
@@ -159,23 +102,9 @@ class Whirlwind(SkillBase):
     def ApplyTargetAblity(self,src,target,weather):
         target.is_playing=False
 
-class Fly(SkillBase):
+class Fly(StockpileSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('Fly'))
-        self.is_ready=False
-    def PreApply(self,src,target,weather):
-        if self.is_ready==False:
-            print(src.GetName()+'飞上了高空...')
-            self.is_ready=True
-            src.position=PositionEnum.SKY
-            return False
-        self.pp=self.pp-1
-        return True
-
-    def PostApply(self,src,target,weather):
-        if self.is_ready==True:
-            self.is_ready=False
-            src.position=PositionEnum.PLAYGROUND
+        StockpileSkill.__init__(self,SkillChart.GetSkillSeries('Fly'),PositionEnum.SKY,'飞上了高空')
 
 
 class Bind(SkillBase):
@@ -198,16 +127,9 @@ class Stomp(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('Stomp'))
 
 
-class DoubleKick(SkillBase):
+class DoubleKick(MultiHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('doublekick'))
-    def ApplyTarget(self,src,target,weather):
-        damage=0
-        for i in range(2):
-            print('击中'+str(i+1)+'次')
-            damage = damage + self.DamageCal(src,target,weather)
-            rest()
-        return damage
+        MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('doublekick'),2)
 
 
 class MegaKick(SkillBase):
@@ -218,8 +140,9 @@ class MegaKick(SkillBase):
 class JumpKick(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('jumpkick'))
-    def SideEffect(self,src):
-        target_damage = self.ApplyTarget(src,target,weather)
+    def SideEffect(self,src,target):
+        print(src.GetName()+'受到副作用')
+        target_damage = self.ApplyTarget(src,target,None)
         self.ApplyDamage(src,target_damage//8)
 
 
@@ -245,39 +168,14 @@ class HornAttack(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('HornAttack'))
 
 
-class FuryAttack(SkillBase):
+class FuryAttack(MultiHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('furyattack'))
-    def ApplyTarget(self,src,target,weather):
-        damage=0
-        hit_chance = np.random.rand()
-        round_num=2
-        if 1/6>hit_chance and hit_chance>=0:
-            round_num=5
-        elif 2/6>hit_chance and hit_chance>=1/6:
-            round_num=4
-        elif 4/6>hit_chance and hit_chance>=2/6:
-            round_num=3
-        elif 6/6>hit_chance and hit_chance>=4/6:
-            round_num=2
-        for i in range(round_num):
-            print('击中'+str(i+1)+'次')
-            damage = damage + self.DamageCal(src,target,weather)
-            rest()
-        return damage
+        MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('furyattack'))
 
 
-class HornDrill(SkillBase):
+class HornDrill(MustKillSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('horndrill'))
-    def ApplyTarget(self,src,target,weather):
-        damage=target.hp
-        return damage
-    def _IsHit(self,src,target):
-        if src.level<target.level:
-            return False
-        else:
-            return np.random.rand()<(30+src.level-target.level)/100
+        MustKillSkill.__init__(self,SkillChart.GetSkillSeries('horndrill'))
 
 
 class Tackle(SkillBase):
@@ -297,9 +195,9 @@ class Wrap(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('wrap'))
 
 
-class TakeDown(SkillBase):
+class TakeDown(ReboundSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('takedown'))
+        ReboundSkill.__init__(self,SkillChart.GetSkillSeries('takedown'),1/4)
 
 
 class Thrash(SkillBase):
@@ -307,9 +205,9 @@ class Thrash(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('Thrash'))
 
 
-class DoubleEdge(SkillBase):
+class DoubleEdge(ReboundSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('doubleedge'))
+        ReboundSkill.__init__(self,SkillChart.GetSkillSeries('doubleedge'),1/3)
 
 
 class TailWhip(SkillBase):
@@ -322,14 +220,14 @@ class PoisonSting(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('poisonsting'))
 
 
-class Twineedle(SkillBase):
+class Twineedle(MultiHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('twineedle'))
+        MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('twineedle'),2)
 
 
-class PinMissile(SkillBase):
+class PinMissile(MultiHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('pinmissile'))
+        MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('pinmissile'))
 
 
 class Leer(SkillBase):
@@ -447,9 +345,9 @@ class DrillPeck(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('drillpeck'))
 
 
-class Submission(SkillBase):
+class Submission(ReboundSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('submission'))
+        ReboundSkill.__init__(self,SkillChart.GetSkillSeries('submission'),1/4)
 
 
 class LowKick(SkillBase):
@@ -472,19 +370,21 @@ class Strength(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('strength'))
 
 
-class Absorb(SkillBase):
+class Absorb(AbsorbSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('absorb'))
+        AbsorbSkill.__init__(self,SkillChart.GetSkillSeries('absorb'))
 
 
-class MegaDrain(SkillBase):
+class MegaDrain(AbsorbSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('megadrain'))
+        AbsorbSkill.__init__(self,SkillChart.GetSkillSeries('megadrain'))
 
 
 class LeechSeed(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('leechseed'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('leechseed'),ObjOfAction.TAR_ABL)
+    def ApplyTargetAblity(self,target):
+        target.special_cond.Set(SpecialCondEnum.PARASITIC,np.random.randint(3,9))
 
 
 class Growth(SkillBase):
@@ -496,40 +396,34 @@ class RazorLeaf(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('RazorLeaf'))
 
 
-class SolarBeam(SkillBase):
+class SolarBeam(StockpileSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('SolarBeam'))
-    def SetDefault(self):
-        self.is_ready=False
-
-    def PreApply(self,src,target,weather):
-        if self.is_ready==False:
-            print(src.GetName()+'吸收了阳光...')
-            self.is_ready=True
-            return False
-        self.pp=self.pp-1
-        return True
-
-    def PostApply(self,src,target,weather):
-        if self.is_ready==True:
-            self.is_ready=False
+        StockpileSkill.__init__(self,SkillChart.GetSkillSeries('SolarBeam'),discription='吸收了阳光...')
+    
 
 class PoisonPowder(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('PoisonPowder'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('PoisonPowder'),ObjOfAction.TAR_ABL)
+
+    def ApplyTargetAblity(self,target):
+        target.status_cond=StatusCondEnum.POISON
+        print(target.GetName()+'中毒了...')
 
 
 class StunSpore(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('StunSpore'))
-
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('StunSpore'),ObjOfAction.TAR_ABL)
+    def ApplyTargetAblity(self,target):
+        target.status_cond=StatusCondEnum.PARALYSIS
+        print(target.GetName()+'麻痹了...')
 
 class SleepPowder(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('SleepPowder'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('SleepPowder'),ObjOfAction.TAR_ABL)
 
     def ApplyTargetAblity(self,target):
-        target.stat_condition=StatusCondition.SLEEP
+        target.status_cond=StatusCondEnum.SLEEP
+        print(target.GetName()+'陷入了睡眠...')
 
 
 
@@ -590,29 +484,14 @@ class Earthquake(SkillBase):
             return self.DamageCal(src,target,weather)
 
 
-class Fissure(SkillBase):
+class Fissure(MustKillSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('Fissure'))
+        MustKillSkill.__init__(self,SkillChart.GetSkillSeries('Fissure'))
 
 
-class Dig(SkillBase):
+class Dig(StockpileSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('dig'))
-        self.is_ready=False
-    def PreApply(self,src,target,weather):
-        if self.is_ready==False:
-            print(src.GetName()+'潜入了地下...')
-            self.is_ready=True
-            src.position=PositionEnum.UNDERGROUND
-            return False
-        self.pp=self.pp-1
-        return True
-
-    def PostApply(self,src,target,weather):
-        if self.is_ready==True:
-            self.is_ready=False
-            src.position=PositionEnum.PLAYGROUND
-
+        StockpileSkill.__init__(self,SkillChart.GetSkillSeries('dig'),PositionEnum.UNDERGROUND,'潜入了地下...')
 
 class Toxic(SkillBase):
     def __init__(self):
@@ -804,30 +683,16 @@ class Swift(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('swift'))
 
 
-class SkullBash(SkillBase):
+class SkullBash(StockpileSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('skullbash'),ObjOfAction.TAR+ObjOfAction.SRC_ABL)
-    def SetDefault(self):
-        self.is_ready=False
-    def PreApply(self,src,target,weather):
-        if self.is_ready==False:
-            
-            print(src.GetName()+'缩起了脖子...')
-            self.is_ready=True
-            return False
-        self.pp=self.pp-1
-        return True
-
-    def PostApply(self,src,target,weather):
-        if self.is_ready==True:
-            self.is_ready=False
+        StockpileSkill.__init__(self,SkillChart.GetSkillSeries('skullbash'),discription='缩起了脖子',obj_of_action=ObjOfAction.TAR+ObjOfAction.SRC_ABL)
     def ApplySrcAblity(self,src):
         print(src.stage.Up(StageEnum.DEFENSE,1))
 
 
-class SpikeCannon(SkillBase):
+class SpikeCannon(MultiHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('spikecannon'))
+        MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('spikecannon'))
 
 
 class Constrict(SkillBase):
@@ -855,6 +720,10 @@ class SoftBoiled(SkillBase):
 class HighJumpKick(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('highjumpkick'))
+    def SideEffect(self,src,target):
+        print(src.GetName()+'受到副作用')
+        target_damage = self.ApplyTarget(src,target,None)
+        self.ApplyDamage(src,target_damage//8)
 
 
 class Glare(SkillBase):
@@ -862,9 +731,17 @@ class Glare(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('glare'))
 
 
-class DreamEater(SkillBase):
+class DreamEater(AbsorbSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('dreameater'))
+        AbsorbSkill.__init__(self,SkillChart.GetSkillSeries('dreameater'))
+    def PreApply(self,src,target,weather):
+        self.pp=self.pp-1
+        if target.status_cond == StatusCondEnum.SLEEP:
+            return True
+        else:
+            print('似乎没有什么效果')
+            return False
+        
 
 
 class PoisonGas(SkillBase):
@@ -872,14 +749,14 @@ class PoisonGas(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('poisongas'))
 
 
-class Barrage(SkillBase):
+class Barrage(MultiHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('Barrage'))
+        MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('Barrage'))
 
 
-class LeechLife(SkillBase):
+class LeechLife(AbsorbSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('leechlife'))
+        AbsorbSkill.__init__(self,SkillChart.GetSkillSeries('leechlife'))
 
 
 class LovelyKiss(SkillBase):
@@ -887,23 +764,9 @@ class LovelyKiss(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('lovelykiss'))
 
 
-class SkyAttack(SkillBase):
+class SkyAttack(StockpileSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('skyattack'))
-    def SetDefault(self):
-        self.is_ready=False
-
-    def PreApply(self,src,target,weather):
-        if self.is_ready==False:
-            print(src.GetName()+'被强烈的光芒包围着...')
-            self.is_ready=True
-            return False
-        self.pp=self.pp-1
-        return True
-
-    def PostApply(self,src,target,weather):
-        if self.is_ready==True:
-            self.is_ready=False
+        StockpileSkill.__init__(self,SkillChart.GetSkillSeries('skyattack'),discription='被强烈的光芒包围着')
 
 class Transform(SkillBase):
     def __init__(self):
@@ -922,7 +785,10 @@ class DizzyPunch(SkillBase):
 
 class Spore(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('spore'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('spore'),ObjOfAction.TAR_ABL)
+    def ApplyTargetAblity(self,target):
+        target.status_cond=StatusCondEnum.SLEEP
+        print(target.GetName()+'陷入了睡眠...')
 
 
 class Flash(SkillBase):
@@ -955,14 +821,14 @@ class Explosion(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('explosion'))
 
 
-class FurySwipes(SkillBase):
+class FurySwipes(MultiHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('furyswipes'))
+        MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('furyswipes'))
 
 
-class Bonemerang(SkillBase):
+class Bonemerang(MultiHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('bonemerang'))
+        MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('bonemerang'),2)
 
 
 class Rest(SkillBase):
@@ -1010,9 +876,9 @@ class Substitute(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('substitute'))
 
 
-class Struggle(SkillBase):
+class Struggle(SelfLossSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('struggle'))
+        SelfLossSkill.__init__(self,SkillChart.GetSkillSeries('struggle'),1/4)
 
 
 

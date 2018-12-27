@@ -94,9 +94,11 @@ class StatusCondEnum(IntEnum):
             return '睡觉'
 
 class SpecialCondEnum(IntEnum):
-    CONFUSION=0
-    BOUND=1
-    FORCED=2
+    STIFF=0,
+    FORCED=1,
+    BOUND=2,
+    CONFUSION=3,
+    PARASITIC=4
 
     @classmethod
     def ToChinese(cls,value):
@@ -106,7 +108,10 @@ class SpecialCondEnum(IntEnum):
             return '被束缚'
         elif value==SpecialCondEnum.FORCED:
             return '强制攻击'
-
+        elif value==SpecialCondEnum.STIFF:
+            return '僵硬'
+        elif value==SpecialCondEnum.PARASITIC:
+            return '寄生'
 
 class StageEnum(IntEnum):
     ATTACK=0,

@@ -59,13 +59,14 @@ class SpecialCond(object):
         for i in range(len(self._special_cond)):
             if self._special_cond[i]>0:
                 self._special_cond[i]=self._special_cond[i]-1
-
+    def Set(self,special_cond_enum,num):
+        self._special_cond[special_cond_enum]=num
 
     def Get(self,special_cond_enum):
         return self._special_cond[special_cond_enum]
 
     def Clear(self):
-        self._special_cond=[0,0,0]
+        self._special_cond=[0,0,0,0,0]
 '''
     能力阶级
 '''
