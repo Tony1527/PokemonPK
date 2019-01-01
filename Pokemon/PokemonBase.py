@@ -37,6 +37,7 @@ class PokemonBase(object):
         self.special_cond=SpecialCond()
         self.is_playing=False
         self.position=PositionEnum.PLAYGROUND
+        self.last_round=LastRound()
 
     def HP(self):
         return self._hp

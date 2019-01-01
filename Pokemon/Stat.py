@@ -131,7 +131,13 @@ class Stage(object):
             change_mode= '似乎没有发生变化'
         return StageEnum.ToChinese(stage_enum)+change_mode
         
-        
+class LastRound(object):
+    def __init__(self):
+        self.target_skill=None
+        self.src_skill=None
+        self.suffer_damage=0
+    
+
         
         
 

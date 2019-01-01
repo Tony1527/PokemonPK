@@ -43,6 +43,7 @@ class SkillBase(Singleton):
     _category=False
     _info = '-'
     _name = ''
+    _priority=0
     _pp=0
 
     pp = 0
@@ -72,15 +73,15 @@ class SkillBase(Singleton):
     def Apply(self,src=None,target=None,weather=None):
         # if (src!=None and target!=None) and not (isinstance(src,PokemonBase) and isinstance(target,PokemonBase)):
         #     raise ValueError('src or target must be derived from SkillBase')
-        
+        target_damage=0
         print('{}使用{}'.format(src.GetName(),self._name))
         if not self.PreApply(src,target,weather):
             rest()
             print('==============')
-            return
+            return target_damage
         
         if self._IsHit(src,target):
-            target_damage=0
+            
             if  self._obj_of_action & ObjOfAction.SRC_ABL:
                 self.ApplySrcAblity(src)
                 rest()
@@ -104,6 +105,7 @@ class SkillBase(Singleton):
             rest()
         self.PostApply(src,target,weather)
         print('==============')
+        return target_damage
 
     def _IsHit(self,src,target):
         if self._hit==0:
@@ -176,6 +178,7 @@ class SkillBase(Singleton):
             print(target.GetName()+StatusCondEnum.ToChinese(status_cond)+"了")
     def ApplyDamage(self,target,damage):
         if damage==0:
+            print('似乎没有什么效果')
             return
         delay_val=50
         while delay_val<damage:
@@ -197,7 +200,8 @@ class SkillBase(Singleton):
         
     def GetName(self):
         return self._name
-        
+    def GetPriority(self):
+        return self._priority 
 
 class SkillChart(Singleton):
     _skill_chart=None

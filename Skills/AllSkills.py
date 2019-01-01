@@ -98,7 +98,7 @@ class WingAttack(SkillBase):
 class Whirlwind(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('WhirlWind'),ObjOfAction.TAR_ABL)
-        self.priority=-6
+        self._priority=-6
     def ApplyTargetAblity(self,src,target,weather):
         target.is_playing=False
 
@@ -358,6 +358,9 @@ class LowKick(SkillBase):
 class Counter(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('counter'))
+        self._priority=-5
+    def ApplyTarget(self,src,target,weather):
+        return src.last_round.suffer_damage*2
 
 
 class SeismicToss(SkillBase):
@@ -526,6 +529,7 @@ class Agility(SkillBase):
 class QuickAttack(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('quickattack'))
+        self._priotity=1
 
 
 class Rage(SkillBase):
@@ -535,7 +539,9 @@ class Rage(SkillBase):
 
 class Teleport(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('teleport'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('teleport'),ObjOfAction.TAR_ABL)
+    def ApplyTarget(self,src,target,weather):
+        self.is_playing=False
 
 
 class NightShade(SkillBase):
@@ -620,7 +626,41 @@ class FocusEnergy(SkillBase):
 
 class Bide(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('bide'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('bide'),ObjOfAction.TAR+ObjOfAction.SRC_ABL)
+        self._priotity=1
+    def SetDefault(self):
+        self._is_ready=False
+        self._suffer_damage=0
+        self._round_num=0
+        self._damage=0
+    def PreApply(self,src,target,weather):
+        if self._is_ready==False:
+            
+            if self._round_num==0:
+                self._suffer_damage=0
+            else:
+                self._suffer_damage=self._hp-src.hp
+            self._round_num=self._round_num+1
+            self._hp=src.hp
+            
+            self._damage=self._damage+self._suffer_damage
+            if self._round_num==3:
+                self._is_ready=True
+                print(src.GetName()+'爆发了！')
+                return True
+            else:
+                print(src.GetName()+'忍耐中...')
+            return False
+        self.pp=self.pp-1
+        return True
+    def ApplyTarget(self,src,target,weather):
+        return self._damage*2
+    def PostApply(self,src,target,weather):
+        if self._is_ready==True:
+            self.SetDefault()
+    def ApplySrcAblity(self,src):
+        src.special_cond.Set(SpecialCondEnum.FORCED,3)
+    
 
 
 class Metronome(SkillBase):
