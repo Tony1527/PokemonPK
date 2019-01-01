@@ -143,4 +143,8 @@ class PositionEnum(IntEnum):
     UNDERGROUND=1,
     SKY=2
 
-    
+class WeatherEnum(IntEnum):
+    NORMAL=0,
+    MIST=1,
+    SUN=2,
+    RAIN=3

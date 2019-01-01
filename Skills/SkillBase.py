@@ -79,7 +79,7 @@ class SkillBase(Singleton):
             print('==============')
             return
         
-        if self._IsHit(src,target):
+        if self._IsHit(src,target,weather):
             target_damage=0
             if  self._obj_of_action & ObjOfAction.SRC_ABL:
                 self.ApplySrcAblity(src)
@@ -93,7 +93,7 @@ class SkillBase(Singleton):
                 self.ApplyDamage(src,src_damage)
                 rest()
             if  self._obj_of_action &ObjOfAction.TAR_ABL:
-                self.ApplyTargetAblity(target)
+                self.ApplyTargetAblity(target,weather)
                 rest()
             if  self._obj_of_action &ObjOfAction.WEATHER:
                 self.ApplyWeather(weather)
@@ -105,7 +105,9 @@ class SkillBase(Singleton):
         self.PostApply(src,target,weather)
         print('==============')
 
-    def _IsHit(self,src,target):
+    def _IsHit(self,src,target,weather):
+        if target!=None and target.position==PositionEnum.UNDERGROUND or target.position==PositionEnum.SKY:
+            return False
         if self._hit==0:
             return True
         rand_value = np.random.randint(1,256)
@@ -164,18 +166,32 @@ class SkillBase(Singleton):
     def ApplySrcAblity(self,src):
         pass
 
-    def ApplyTargetAblity(self,target):
+    def ApplyTargetAblity(self,target,weather):
         pass
 
     def ApplyWeather(self,weather):
         pass
 
+    def CauseSpecialCond(self,target,percent,special_cond,round=0):
+        if np.random.rand()<percent:
+            if target.special_cond.Get(special_cond)==0:
+                if round==0:
+                    num=np.random.randint(1,4)
+                target.special_cond.Set(special_cond,num)
+                print(target.GetName()+SpecialCondEnum.ToChinese(special_cond)+"了")
+            
+                
+
     def CauseStatusCond(self,target,percent,status_cond):
-        if StatusCondEnum.IsNormal(target.status_cond) and np.random.rand()<percent:
-            target.status_cond = status_cond
-            print(target.GetName()+StatusCondEnum.ToChinese(status_cond)+"了")
+        if np.random.rand()<percent:
+            if StatusCondEnum.IsNormal(target.status_cond):
+                target.status_cond = status_cond
+                print(target.GetName()+StatusCondEnum.ToChinese(status_cond)+"了")
+            else:
+                print('似乎没有什么效果')
     def ApplyDamage(self,target,damage):
         if damage==0:
+            print('似乎对对方没有造成什么伤害')
             return
         delay_val=50
         while delay_val<damage:

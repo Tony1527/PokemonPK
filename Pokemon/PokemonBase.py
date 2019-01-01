@@ -84,6 +84,12 @@ class PokemonBase(object):
             self._speed=int((self._stat.speed+self._indiv_values.speed)*self.level/50+5)
             self.PrintInfo()
 
+    def Down(self,stage_enum,num):
+        print(self._name+'的'+self.stage.Down(stage_enum,num))
+
+    def Up(self,stage_enum,num):
+        print(self._name+'的'+self.stage.Up(stage_enum,num))
+
     #学习技能
     def LearnSkills(self,skills=[],auto_learn=False,auto_lu_num=2,auto_tm_num=2):
         global g_c2e
