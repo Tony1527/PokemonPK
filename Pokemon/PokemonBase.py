@@ -27,17 +27,20 @@ class PokemonBase(object):
 
     def ResetStat(self):
         self.hp=self._hp
-        self.attack=self._attack
-        self.defense=self._defense
-        self.special_attack=self._special_attack
-        self.special_defense=self._special_defense
-        self.speed=self._speed
+        # self.attack=self._attack
+        # self.defense=self._defense
+        # self.special_attack=self._special_attack
+        # self.special_defense=self._special_defense
+        # self.speed=self._speed
         self.stage=Stage()
         self.status_cond=StatusCondEnum.NORMAL
         self.special_cond=SpecialCond()
         self.is_playing=False
         self.position=PositionEnum.PLAYGROUND
         self.last_round=LastRound()
+
+    def ResetStage(self):
+        self.stage.Clear()
 
     def HP(self):
         return self._hp
@@ -84,6 +87,12 @@ class PokemonBase(object):
             self._special_defense=int((self._stat.special_defense+self._indiv_values.special)*self.level/50+5)
             self._speed=int((self._stat.speed+self._indiv_values.speed)*self.level/50+5)
             self.PrintInfo()
+
+    def Down(self,stage_enum,num):
+        print(self._name+'的'+self.stage.Down(stage_enum,num))
+
+    def Up(self,stage_enum,num):
+        print(self._name+'的'+self.stage.Up(stage_enum,num))
 
     #学习技能
     def LearnSkills(self,skills=[],auto_learn=False,auto_lu_num=2,auto_tm_num=2):

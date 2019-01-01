@@ -89,4 +89,4 @@ class AbsorbSkill(SkillBase):
     def ApplySrc(self,src,target_damage):
         absorb_value=int(target_damage*self._percent)
         print(src.GetName()+'吸收了'+str(absorb_value)+'点生命')
-        return 0
+        return -1

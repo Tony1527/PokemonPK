@@ -98,7 +98,9 @@ class SpecialCondEnum(IntEnum):
     FORCED=1,
     BOUND=2,
     CONFUSION=3,
-    PARASITIC=4
+    PARASITIC=4,
+    LIGHT_SCREEN=5,
+    REFLECT=6
 
     @classmethod
     def ToChinese(cls,value):
@@ -112,6 +114,11 @@ class SpecialCondEnum(IntEnum):
             return '僵硬'
         elif value==SpecialCondEnum.PARASITIC:
             return '寄生'
+        elif value==SpecialCondEnum.LIGHT_SCREEN:
+            return '被光墙包围'
+        elif value==SpecialCondEnum.REFLECT:
+            return '被反射壁包围'
+        
 
 class StageEnum(IntEnum):
     ATTACK=0,
@@ -120,7 +127,8 @@ class StageEnum(IntEnum):
     SPECIAL_DEFENSE=3,
     SPEED=4,
     HIT=5,
-    DODGE=6
+    DODGE=6,
+    CRITICAL_HITS=7
     @classmethod
     def ToChinese(cls,value):
         if value==StageEnum.ATTACK:
@@ -137,10 +145,16 @@ class StageEnum(IntEnum):
             return '命中率'
         elif value==StageEnum.DODGE:
             return '闪避'
+        elif value==StageEnum.CRITICAL_HITS:
+            return '易中要害'
 
 class PositionEnum(IntEnum):
     PLAYGROUND=0,
     UNDERGROUND=1,
     SKY=2
 
-    
+class WeatherEnum(IntEnum):
+    NORMAL=0,
+    MIST=1,
+    SUN=2,
+    RAIN=3

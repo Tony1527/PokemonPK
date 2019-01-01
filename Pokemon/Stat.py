@@ -66,7 +66,7 @@ class SpecialCond(object):
         return self._special_cond[special_cond_enum]
 
     def Clear(self):
-        self._special_cond=[0,0,0,0,0]
+        self._special_cond=[0,0,0,0,0,0,0]
 '''
     能力阶级
 '''
@@ -109,7 +109,7 @@ class Stage(object):
         
 
     def Clear(self):
-        self._stage=[0,0,0,0,0,0,0]
+        self._stage=[0,0,0,0,0,0,0,0]
 
     @classmethod
     def ToChinese(cls,stage_enum,value):
@@ -133,8 +133,8 @@ class Stage(object):
         
 class LastRound(object):
     def __init__(self):
-        self.target_skill=None
-        self.src_skill=None
+        self.target_skill=''
+        self.src_skill=''
         self.suffer_damage=0
     
 
