@@ -142,7 +142,6 @@ ChineseName,EnglishName,Type,Category,Power,Hit,PP
 吸血,LeechLife,BUG,PHYSICS,80,100,10
 恶魔之吻,LovelyKiss,NORMAL,PHYSICS,-,75,10
 神鸟猛击,SkyAttack,FLYING,PHYSICS,140,90,5
-变身,Transform,NORMAL,PHYSICS,-,-,10
 泡沫,Bubble,WATER,SPECIAL,40,100,30
 迷昏拳,DizzyPunch,NORMAL,PHYSICS,70,100,10
 蘑菇孢子,Spore,GRASS,PHYSICS,-,100,15

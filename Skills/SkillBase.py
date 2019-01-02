@@ -31,9 +31,7 @@ g_skill_hit={
     50:127
 }
 
-g_special_critical_skills=[
-    '劈开','飞叶快刀','空手劈','蟹钳','旋风刀'
-]
+
 
 class SkillBase(Singleton):
     _obj_of_action=None
@@ -115,6 +113,8 @@ class SkillBase(Singleton):
         rand_value = np.random.randint(1,256)
         hit_value=g_skill_hit[self._hit]*src.stage.Get(StageEnum.HIT)/target.stage.Get(StageEnum.DODGE)
         return rand_value<hit_value
+    def _IsCriticalHit(self,src,target):
+        return  np.random.rand()<src.GetStat().speed/2/256*src.stage.Get(StageEnum.CRITICAL_HITS)
     def SideEffect(self,src,target):
         pass
     def PreApply(self,src,target,weather):
@@ -137,10 +137,11 @@ class SkillBase(Singleton):
         #额外项
         addition=np.random.randint(85,101)/100
         #击中要害
-        if self._name in g_special_critical_skills:
-            is_critical_hit= np.random.rand()<src.GetStat().speed*4/256*src.stage.Get(StageEnum.CRITICAL_HITS)
-        else:
-            is_critical_hit= np.random.rand()<src.GetStat().speed/2/256*src.stage.Get(StageEnum.CRITICAL_HITS)
+        is_critical_hit=self._IsCriticalHit(src,target)
+        # if self._name in g_special_critical_skills:
+        #     is_critical_hit= np.random.rand()<src.GetStat().speed*4/256*src.stage.Get(StageEnum.CRITICAL_HITS)
+        # else:
+        #     is_critical_hit= np.random.rand()<src.GetStat().speed/2/256*src.stage.Get(StageEnum.CRITICAL_HITS)
 
 
         if is_critical_hit:
@@ -186,10 +187,12 @@ class SkillBase(Singleton):
             
                 
 
-    def CauseStatusCond(self,target,percent,status_cond):
+    def CauseStatusCond(self,target,percent,status_cond,round=0):
         if np.random.rand()<percent:
-            if StatusCondEnum.IsNormal(target.status_cond):
-                target.status_cond = status_cond
+            if StatusCondEnum.IsNormal(target.status_cond.Get()):
+                if round==0:
+                    round=np.random.randint(1,3)
+                target.status_cond.Set(status_cond,round)
                 print(target.GetName()+StatusCondEnum.ToChinese(status_cond)+"了")
             else:
                 print('似乎没有什么效果')

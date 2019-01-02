@@ -33,7 +33,7 @@ class PokemonBase(object):
         # self.special_defense=self._special_defense
         # self.speed=self._speed
         self.stage=Stage()
-        self.status_cond=StatusCondEnum.NORMAL
+        self.status_cond=StatusCond()
         self.special_cond=SpecialCond()
         self.is_playing=False
         self.position=PositionEnum.PLAYGROUND

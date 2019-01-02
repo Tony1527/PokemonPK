@@ -90,3 +90,7 @@ class AbsorbSkill(SkillBase):
         absorb_value=int(target_damage*self._percent)
         print(src.GetName()+'吸收了'+str(absorb_value)+'点生命')
         return -1
+
+class EasyCriticalHitSkill(SkillBase):
+    def _IsCriticalHit(self,src,target):
+        return np.random.rand()<src.GetStat().speed*4/256*src.stage.Get(StageEnum.CRITICAL_HITS)

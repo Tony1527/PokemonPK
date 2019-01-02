@@ -48,6 +48,31 @@ class IndivValues(object):
             self.hp = self.hp+2
         if special%2:
             self.hp = self.hp+1
+
+'''
+    特殊状态
+'''
+class StatusCond(object):
+    
+    def __init__(self):
+        self.Clear()
+    
+    def Reduce(self):
+        if self._round>0:
+            self._round=self._round-1
+        if self._round==0:
+            self.condition=StatusCondEnum.NORMAL
+    def Set(self,status_cond_enum,round):
+        self._condition=status_cond_enum
+        self._round=_round
+
+    def Get(self):
+        return self._condition
+
+    def Clear(self):
+        self._condition=StatusCondEnum.NORMAL
+        self._round=0
+
 '''
     特殊状态
 '''

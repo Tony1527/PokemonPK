@@ -7,9 +7,9 @@ class Pound(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('Pound'))
 
-class KarateChop(SkillBase):
+class KarateChop(EasyCriticalHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('KarateChop'))
+        EasyCriticalHitSkill.__init__(self,SkillChart.GetSkillSeries('KarateChop'))
     
 
 class DoubleSlap(MultiHitSkill):
@@ -62,7 +62,7 @@ class Guillotine(MustKillSkill):
     def __init__(self):
         MustKillSkill.__init__(self,SkillChart.GetSkillSeries('Guillotine'))
 
-class RazorWind(StockpileSkill):
+class RazorWind(StockpileSkill,EasyCriticalHitSkill):
     def __init__(self):
         StockpileSkill.__init__(self,SkillChart.GetSkillSeries('RazorWind'),discription='蓄力中')
 
@@ -431,9 +431,9 @@ class Growth(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('growth'))
 
-class RazorLeaf(SkillBase):
+class RazorLeaf(EasyCriticalHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('RazorLeaf'))
+        EasyCriticalHitSkill.__init__(self,SkillChart.GetSkillSeries('RazorLeaf'))
 
 
 class SolarBeam(StockpileSkill):
@@ -796,11 +796,9 @@ class MirrorMove(SkillBase):
         else:
             return GetObjByChineseName(name).Apply(src,target,weather)
 
-class SelfDestruct(SkillBase):
+class SelfDestruct(SelfLossSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('selfdestruct'),ObjOfAction.SRC+ObjOfAction.TAR)
-    def ApplySrc(self,src,target_damage):
-        return src.hp
+        SelfLossSkill.__init__(self,SkillChart.GetSkillSeries('selfdestruct'),1)
 
 class EggBomb(SkillBase):
     def __init__(self):
@@ -960,25 +958,34 @@ class LovelyKiss(SkillBase):
         print(target.GetName()+'陷入了睡眠...')
 
 
-class SkyAttack(StockpileSkill):
+class SkyAttack(StockpileSkill,EasyCriticalHitSkill):
     def __init__(self):
         StockpileSkill.__init__(self,SkillChart.GetSkillSeries('skyattack'),discription='被强烈的光芒包围着')
 
 
-#TODO :copy from target to src
-class Transform(SkillBase):
-    def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('transform'))
+#TODO :deprecated
+# class Transform(SkillBase):
+#     def __init__(self):
+#         SkillBase.__init__(self,SkillChart.GetSkillSeries('transform'))
 
 
 class Bubble(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('bubble'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('bubble'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
+    def ApplyTargetAblity(self,target,weather):
+        if np.random.rand()<0.1:
+            if weather!=WeatherEnum.MIST:
+                target.Down(StageEnum.SPEED,1)
+            else:
+                print('由于白雾效果，宝可梦的能力阶级不会下降')
 
 
 class DizzyPunch(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('dizzypunch'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('dizzypunch'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
+    def ApplyTargetAblity(self,target,weather):
+        self.CauseSpecialCond(target,0.2,SpecialCondEnum.CONFUSION)
+    
 
 
 class Spore(SkillBase):
@@ -991,32 +998,43 @@ class Spore(SkillBase):
 
 class Flash(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('flash'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('flash'),ObjOfAction.TAR_ABL)
+    def ApplyTargetAblity(self,target,weather):
+        if weather!=WeatherEnum.MIST:
+            target.Down(StageEnum.HIT,1)
+        else:
+            print('由于白雾效果，宝可梦的能力阶级不会下降')
 
 
 class Psywave(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('psywave'))
+    def ApplyTarget(self,src,target,weather):
+        return src.level*np.random.randint(5,15)/10
 
 
 class Splash(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('splash'))
+    def ApplyTarget(self,src,target,weather):
+        return 0
 
 
 class AcidArmor(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('acidarmor'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('acidarmor'),ObjOfAction.SRC_ABL)
+    def ApplySrcAblity(self,src):
+        src.Up(StageEnum.DEFENSE,2)
 
 
-class Crabhammer(SkillBase):
+class Crabhammer(EasyCriticalHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('crabhammer'))
+        EasyCriticalHitSkill.__init__(self,SkillChart.GetSkillSeries('crabhammer'))
 
 
-class Explosion(SkillBase):
+class Explosion(SelfLossSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('explosion'))
+        SelfLossSkill.__init__(self,SkillChart.GetSkillSeries('explosion'),1)
 
 
 class FurySwipes(MultiHitSkill):
@@ -1028,10 +1046,14 @@ class Bonemerang(MultiHitSkill):
     def __init__(self):
         MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('bonemerang'),2)
 
-
+#TODO :something goes wrong
 class Rest(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('rest'))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('rest'),ObjOfAction.SRC_ABL)
+    def ApplySrcAblity(self,src):
+        RecoverAllHP(src)
+        RecoverStatusCond(src)
+        self.CauseStatusCond(src,1,StatusCondEnum.SLEEP,2)
 
 
 class RockSlide(SkillBase):
@@ -1064,9 +1086,9 @@ class SuperFang(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('superfang'))
 
 
-class Slash(SkillBase):
+class Slash(EasyCriticalHitSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('slash'))
+        EasyCriticalHitSkill.__init__(self,SkillChart.GetSkillSeries('slash'))
 
 
 class Substitute(SkillBase):
