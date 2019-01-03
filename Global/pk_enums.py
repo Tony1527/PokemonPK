@@ -91,7 +91,7 @@ class StatusCondEnum(IntEnum):
         elif stat_condition==StatusCondEnum.BADLYPOISON:
             return '剧毒'
         elif stat_condition==StatusCondEnum.SLEEP:
-            return '睡觉'
+            return '呼呼大睡'
 
 class SpecialCondEnum(IntEnum):
     STIFF=0,

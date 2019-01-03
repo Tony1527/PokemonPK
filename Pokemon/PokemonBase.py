@@ -27,11 +27,7 @@ class PokemonBase(object):
 
     def ResetStat(self):
         self.hp=self._hp
-        # self.attack=self._attack
-        # self.defense=self._defense
-        # self.special_attack=self._special_attack
-        # self.special_defense=self._special_defense
-        # self.speed=self._speed
+        self.type=self._type
         self.stage=Stage()
         self.status_cond=StatusCond()
         self.special_cond=SpecialCond()
@@ -60,8 +56,11 @@ class PokemonBase(object):
     def Speed(self):
         return self._speed
 
-    def GetType(self):
+    def Type(self):
         return self._type
+
+    def GetSkills(self):
+        return self._skills
 
     def GetName(self):
         return self._name
@@ -86,7 +85,7 @@ class PokemonBase(object):
             self._special_attack=int((self._stat.special_attack+self._indiv_values.special)*self.level/50+5)
             self._special_defense=int((self._stat.special_defense+self._indiv_values.special)*self.level/50+5)
             self._speed=int((self._stat.speed+self._indiv_values.speed)*self.level/50+5)
-            self.PrintInfo()
+            print(str(self))
 
     def Down(self,stage_enum,num):
         print(self._name+'的'+self.stage.Down(stage_enum,num))
@@ -183,8 +182,8 @@ class PokemonBase(object):
         for i,skill in enumerate(self._skills):
             print(i+1,' ',skill.GetInfo())
 
-    def PrintInfo(self):
-        print('{}\tLevel:{}\t\tHP:{}\t\tAttack:{}\t\tDefense:{}\t\tSpecialAttack:{}\t\tSpecialDefense:{}\t\tSpeed:{}'.format(self._name,self.level,self._hp,self._attack,self._defense,self._special_attack,self._special_defense,self._speed))
+    def __str__(self):
+        return '{}\tLevel:{}\t\tHP:{}\t\tAttack:{}\t\tDefense:{}\t\tSpecialAttack:{}\t\tSpecialDefense:{}\t\tSpeed:{}'.format(self._name,self.level,self._hp,self._attack,self._defense,self._special_attack,self._special_defense,self._speed)
 
    
 

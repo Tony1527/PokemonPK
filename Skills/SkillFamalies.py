@@ -37,7 +37,7 @@ class MustKillSkill(SkillBase):
         damage=target.hp
         print('一击必杀')
         return damage
-    def _IsHit(self,src,target):
+    def _IsHit(self,src,target,weather):
         if src.level<target.level:
             return False
         else:

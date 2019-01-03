@@ -8,17 +8,20 @@ def RecoverAll(pokemon):
     RecoverStage(pokemon)
     RecoverStatusCond(pokemon)
     RecoverHP(pokemon)
-
+    return True
 '''
     恢复HP
 '''
 def RecoverAllHP(pokemon):
+    recover_value=pokemon.HP()-pokemon.hp
     pokemon.hp=pokemon.HP()
+    return str(recover_value)
 
 '''
     恢复部分HP
 '''
 def RecoverHP(pokemon,value):
+    value=int(value)
     recover_value=0
     if pokemon.hp!=0:
         if pokemon.hp+value>=pokemon.HP():
@@ -28,17 +31,22 @@ def RecoverHP(pokemon,value):
             pokemon.hp=pokemon.hp+value
             recover_value =  value
     
-    return recover_value
+    return str(recover_value)
 
 '''
     恢复能力阶级
 '''
 def RecoverStage(pokemon):
     pokemon.stage.Clear()
+    return True
 
 
 '''
     恢复异常状态
 '''
 def RecoverStatusCond(pokemon):
-    pokemon.status_cond=StatusCondEnum.NORMAL
+    if pokemon.status_cond.IsNormal():
+        return False
+    else:
+        pokemon.status_cond.Clear()
+        return True

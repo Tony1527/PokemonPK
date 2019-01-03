@@ -64,7 +64,7 @@ class StatusCond(object):
             self.condition=StatusCondEnum.NORMAL
     def Set(self,status_cond_enum,round):
         self._condition=status_cond_enum
-        self._round=_round
+        self._round=round
 
     def Get(self):
         return self._condition
@@ -72,6 +72,12 @@ class StatusCond(object):
     def Clear(self):
         self._condition=StatusCondEnum.NORMAL
         self._round=0
+
+    def IsNormal(self):
+        return StatusCondEnum.IsNormal(self._condition)
+
+    def __str__(self):
+        return StatusCondEnum.ToChinese(self._condition)
 
 '''
     特殊状态

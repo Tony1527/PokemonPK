@@ -48,6 +48,7 @@ ChineseName,EnglishName,Type,Category,Power,Hit,PP
 唱歌,Sing,NORMAL,PHYSICS,-,55,15
 超音波,Supersonic,NORMAL,PHYSICS,-,55,20
 音爆,SonicBoom,NORMAL,SPECIAL,-,90,20
+定身法,Disable,NORMAL,PHYSICS,-,100,20
 溶解液,Acid,POISON,SPECIAL,40,100,30
 火花,Ember,FIRE,SPECIAL,40,100,25
 喷射火焰,Flamethrower,FIRE,SPECIAL,90,100,15
@@ -99,6 +100,7 @@ ChineseName,EnglishName,Type,Category,Power,Hit,PP
 愤怒,Rage,NORMAL,PHYSICS,20,100,20
 瞬间移动,Teleport,PSYCHC,PHYSICS,-,-,20
 黑夜魔影,NightShade,GHOST,SPECIAL,-,100,15
+模仿,Mimic,NORMAL,PHYSICS,-,-,10
 刺耳声,Screech,NORMAL,PHYSICS,-,85,40
 影子分身,DoubleTeam,NORMAL,PHYSICS,-,-,15
 自我再生,Recover,NORMAL,PHYSICS,-,-,10
@@ -159,4 +161,5 @@ ChineseName,EnglishName,Type,Category,Power,Hit,PP
 三重攻击,TriAttack,NORMAL,SPECIAL,80,100,10
 愤怒门牙,SuperFang,NORMAL,PHYSICS,-,90,10
 劈开,Slash,NORMAL,PHYSICS,70,100,20
+替身,Substitute,NORMAL,PHYSICS,-,-,10
 挣扎,Struggle,NORMAL,PHYSICS,50,-,30

@@ -84,11 +84,11 @@ class SkillBase(Singleton):
                 self.ApplySrcAblity(src)
                 rest()
             if self._obj_of_action & ObjOfAction.TAR:
-                target_damage = self.ApplyTarget(src,target,weather)
+                target_damage = int(self.ApplyTarget(src,target,weather))
                 self.ApplyDamage(target,target_damage)
                 rest()
             if  self._obj_of_action &ObjOfAction.SRC:
-                src_damage = self.ApplySrc(src,target_damage)
+                src_damage = int(self.ApplySrc(src,target_damage))
                 self.ApplyDamage(src,src_damage)
                 rest()
             if  self._obj_of_action &ObjOfAction.TAR_ABL:
@@ -122,26 +122,22 @@ class SkillBase(Singleton):
         return True
     def PostApply(self,src,target,weather):
         pass
-    def DamageCal(self,src,target,weather):
+    def DamageCal(self,src,target,weather,is_print=True):
         if self._category==CategoryEnum.PHYSICS:
             A_div_D = src.Attack()*src.stage.Get(StageEnum.ATTACK) / (target.Defense()*target.stage.Get(StageEnum.DEFENSE))
         elif self._category == CategoryEnum.SPECIAL:
             A_div_D = src.SpecialAttack()*src.stage.Get(StageEnum.SPECIAL_ATTACK) / (target.SpecialDefense()*target.stage.Get(StageEnum.SPECIAL_DEFENSE))
 
         #属性相克系数
-        modifier,effect_str = TypeChart.TypeVSType(self._type,target.GetType())
+        modifier,effect_str = TypeChart.TypeVSType(self._type,target.type)
         #主属性与技能属性相同
-        if src.GetType()==self._type:
+        if src.type==self._type:
             modifier = modifier*1.5
 
         #额外项
         addition=np.random.randint(85,101)/100
         #击中要害
         is_critical_hit=self._IsCriticalHit(src,target)
-        # if self._name in g_special_critical_skills:
-        #     is_critical_hit= np.random.rand()<src.GetStat().speed*4/256*src.stage.Get(StageEnum.CRITICAL_HITS)
-        # else:
-        #     is_critical_hit= np.random.rand()<src.GetStat().speed/2/256*src.stage.Get(StageEnum.CRITICAL_HITS)
 
 
         if is_critical_hit:
@@ -150,12 +146,18 @@ class SkillBase(Singleton):
         
         damage = int((((2*src.level/5+2)*self._power*A_div_D)/50+2)*modifier*addition)
 
-        
-        if is_critical_hit and not effect_str==u'似乎没有效果':
+        if self._category==CategoryEnum.PHYSICS and target.special_cond.Get(SpecialCondEnum.REFLECT)!=0:
+            damage=int(damage/2)
+        if self._category==CategoryEnum.SPECIAL and target.special_cond.Get(SpecialCondEnum.LIGHT_SCREEN)!=0:
+            damage=int(damage/2)
+
+        if is_critical_hit and not effect_str==u'似乎没有效果' and is_print:
             print('命中要害')
         
-        if effect_str!='':
+        if effect_str!='' and is_print:
             print('{}'.format(effect_str))
+
+        
         return damage
 
     def ApplySrc(self,src,target_damage):
@@ -175,25 +177,25 @@ class SkillBase(Singleton):
     def ApplyWeather(self,weather):
         pass
 
-    def CauseSpecialCond(self,target,percent,special_cond,round=0):
+    def CauseSpecialCond(self,target,percent,special_cond_enum,round=0):
         if np.random.rand()<percent:
-            if target.special_cond.Get(special_cond)==0:
+            if target.special_cond.Get(special_cond_enum)==0:
                 if round==0:
                     round=np.random.randint(1,4)
-                target.special_cond.Set(special_cond,round)
-                print(target.GetName()+SpecialCondEnum.ToChinese(special_cond)+"了")
+                target.special_cond.Set(special_cond_enum,round)
+                print(target.GetName()+SpecialCondEnum.ToChinese(special_cond_enum)+"了")
             else:
-                print(target.GetName()+'已经'+SpecialCondEnum.ToChinese(special_cond)+"了")
+                print(target.GetName()+'已经'+SpecialCondEnum.ToChinese(special_cond_enum)+"了")
             
                 
 
-    def CauseStatusCond(self,target,percent,status_cond,round=0):
+    def CauseStatusCond(self,target,percent,status_cond_enum,round=0):
         if np.random.rand()<percent:
-            if StatusCondEnum.IsNormal(target.status_cond.Get()):
+            if target.status_cond.IsNormal():
                 if round==0:
                     round=np.random.randint(1,3)
-                target.status_cond.Set(status_cond,round)
-                print(target.GetName()+StatusCondEnum.ToChinese(status_cond)+"了")
+                target.status_cond.Set(status_cond_enum,round)
+                print(target.GetName()+str(target.status_cond)+"了")
             else:
                 print('似乎没有什么效果')
     def ApplyDamage(self,target,damage):
