@@ -216,10 +216,10 @@ class SkillBase(Singleton):
         if target.hp<=0:
             target.hp=0
             print('{}倒下了'.format(target.GetName()))
-    def Print(self):
-        print(self.GetInfo())
+    def print(self):
+        print(self)
 
-    def GetInfo(self):
+    def __str__(self):
         return '{}      描述:{}      属性:{}     PP:{}   威力:{}     命中率:{}      剩余PP:{}'.format(self._name,self._info,TypeEnum.ToChinese(self._type),self._pp,self._power,self._hit,self.pp)
         
     def GetName(self):

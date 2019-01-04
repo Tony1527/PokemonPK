@@ -18,36 +18,48 @@ try:
         PSYCHC=4096,
         ICE=8192,
         DRAGON=16384
+
+
+        def __str__(self):
+            raise RuntimeError('Please use ToChinese instead!')
+            return ''
+
         @classmethod
         def ToChinese(cls,type):
-            if type==TypeEnum.NORMAL:
-                return '一般'
-            elif type==TypeEnum.FIGHT:
-                return '格斗'
-            elif type==TypeEnum.FLYING:
-                return '飞行'
-            elif type==TypeEnum.POISON:
-                return '毒'
-            elif type==TypeEnum.GROUND:
-                return '地'
-            elif type==TypeEnum.ROCK:
-                return '岩石'
-            elif type==TypeEnum.BUG:
-                return '虫'
-            elif type==TypeEnum.FIRE:
-                return '火'
-            elif type==TypeEnum.WATER:
-                return '水'
-            elif type==TypeEnum.GRASS:
-                return '草'
-            elif type==TypeEnum.ELECTR:
-                return '电'
-            elif type==TypeEnum.PSYCHC:
-                return '超能力'
-            elif type==TypeEnum.ICE:
-                return '冰'
-            elif type==TypeEnum.DRAGON:
-                return '龙'
+            mask=1
+            s=''
+            for i in range(0,15):
+                mask=1<<i
+                flag=type&mask
+                if flag==TypeEnum.NORMAL:
+                    s=s+'一般 '
+                elif flag==TypeEnum.FIGHT:
+                   s=s+'格斗 '
+                elif flag==TypeEnum.FLYING:
+                   s=s+'飞行 '
+                elif flag==TypeEnum.POISON:
+                   s=s+'毒 '
+                elif flag==TypeEnum.GROUND:
+                   s=s+'地 '
+                elif flag==TypeEnum.ROCK:
+                   s=s+'岩石 '
+                elif flag==TypeEnum.BUG:
+                   s=s+'虫 '
+                elif flag==TypeEnum.FIRE:
+                   s=s+'火 '
+                elif flag==TypeEnum.WATER:
+                   s=s+'水 '
+                elif flag==TypeEnum.GRASS:
+                   s=s+'草 '
+                elif flag==TypeEnum.ELECTR:
+                   s=s+'电 '
+                elif flag==TypeEnum.PSYCHC:
+                   s=s+'超能力 '
+                elif flag==TypeEnum.ICE:
+                   s=s+'冰 '
+                elif flag==TypeEnum.DRAGON:
+                   s=s+'龙 '
+            return s
 except ValueError as e:
     print(e)
 

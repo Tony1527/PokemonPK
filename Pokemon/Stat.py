@@ -50,7 +50,7 @@ class IndivValues(object):
             self.hp = self.hp+1
 
 '''
-    特殊状态
+    异常状态
 '''
 class StatusCond(object):
     

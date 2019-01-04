@@ -5,10 +5,9 @@ from PokemonBase import *
     恢复所有状态
 '''
 def RecoverAll(pokemon):
-    RecoverStage(pokemon)
-    RecoverStatusCond(pokemon)
-    RecoverHP(pokemon)
-    return True
+    recover_value = RecoverAllHP(pokemon)
+    retstat=RecoverStatusCond(pokemon)
+    return recover_value,retstat
 '''
     恢复HP
 '''
