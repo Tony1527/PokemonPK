@@ -136,7 +136,11 @@ class Stage(object):
             return 1
         else:
             return (2+self._stage[stage_enum])/2
-
+    def Mean(self):
+        sum_val=0
+        for x in self._stage:
+            sum_val=sum_val+x
+        return sum_val/len(self._stage)
         
 
     def Clear(self):

@@ -82,11 +82,11 @@ class Cut(SkillBase):
 class Gust(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('Gust'))
-    def _IsHit(self,src,target,weather):
+    def IsHit(self,src,target,weather):
         if target.position==PositionEnum.UNDERGROUND:
             return False
         else:
-            return SkillBase._IsHit(self,src,target,weather)
+            return SkillBase.IsHit(self,src,target,weather)
     
     def ApplyTarget(self,src,target,weather):
         if target.position==PositionEnum.SKY:
@@ -309,7 +309,7 @@ class SonicBoom(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('SonicBoom'))
     def ApplyTarget(self,src,target,weather):
         return 20
-    def _IsHit(self,src,target,weather):
+    def IsHit(self,src,target,weather):
         rand_value = np.random.randint(1,256)
         hit_value=g_skill_hit[self._hit]*src.stage.Get(StageEnum.HIT)/target.stage.Get(StageEnum.DODGE)
         return rand_value<hit_value
@@ -569,7 +569,7 @@ class Thunder(SkillBase):
     def ApplyTargetAblity(self,target,weather):
         self.CauseStatusCond(target,0.3,StatusCondEnum.PARALYSIS)
     
-    def _IsHit(self,src,target,weather):
+    def IsHit(self,src,target,weather):
         if target.position==PositionEnum.UNDERGROUND:
             return False
         rand_value = np.random.randint(1,256)
@@ -596,11 +596,11 @@ class Earthquake(SkillBase):
         else:
             return self.DamageCal(src,target,weather)
 
-    def _IsHit(self,src,target,weather):
+    def IsHit(self,src,target,weather):
         if target.position==PositionEnum.SKY:
             return False
         else:
-            return SkillBase._IsHit(self,src,target,weather)
+            return SkillBase.IsHit(self,src,target,weather)
 
 
 class Fissure(MustKillSkill):
@@ -710,7 +710,7 @@ class Recover(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('recover'),ObjOfAction.SRC_ABL)
     def ApplySrcAblity(self,src):
-        print(src.GetName()+'恢复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
+        print(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
 
 
 class Harden(SkillBase):
@@ -957,7 +957,7 @@ class SoftBoiled(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('softboiled'),ObjOfAction.SRC_ABL)
     def ApplySrcAblity(self,src):
-        print(src.GetName()+'恢复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
+        print(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
     
 
 
@@ -1111,7 +1111,7 @@ class Rest(SkillBase):
         else:
             return True
     def ApplySrcAblity(self,src):
-        print(src.GetName()+'恢复了'+RecoverAllHP(src)+'点HP')
+        print(src.GetName()+'回复了'+RecoverAllHP(src)+'点HP')
         if RecoverStatusCond(src):
             print(src.GetName()+'解除了所有异常状态')
         self.CauseStatusCond(src,1,StatusCondEnum.SLEEP,2)
@@ -1139,7 +1139,7 @@ class Conversion(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('conversion'),ObjOfAction.SRC_ABL)
     def ApplySrcAblity(self,src):
         if len(src.GetSkills())!=0:
-            src.type=src.GetSkills()[0]
+            src.type=src.GetSkills()[0].GetType()
             print(src.GetName()+'战斗中属性变成了'+TypeEnum.ToChinese(src.type))
 
 class TriAttack(SkillBase):

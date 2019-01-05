@@ -20,13 +20,29 @@ g_d2b = {'1':True,'2':False}
 g_c2e = {}
 g_globals={}
 
+def a2i(s,min=1,max=2):
+    if not s.isdigit():
+        print('无效输入')
+        return -2
+    s=int(s)
+    if s<min or s>max:
+        print('无效输入')
+        return -2
+    
+    return s-1
+
 #通用的Bool条件判断
 def ToBeSure(msg=''):
-    print('Are you sure that you want to '+msg +' ?')
-    print('1.yes')
-    print('2.no')
-    choose = input('your choice:')
-    return g_d2b[choose]
+    while True:
+        print('你确定要'+msg +'？')
+        print('1.是')
+        print('2.否')
+        choose = input('你的选择是:')
+        choose = a2i(choose,1,2)
+        if choose==0:
+            return True
+        else:
+            return False
 
 
 #Singleton Base Class
@@ -94,7 +110,7 @@ def GetObjByChineseName(chinese_name):
         
     
 def rest():
-    time.sleep(0.5) 
+    time.sleep(0.2) 
 
 
 

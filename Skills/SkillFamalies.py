@@ -37,7 +37,7 @@ class MustKillSkill(SkillBase):
         damage=target.hp
         print('一击必杀')
         return damage
-    def _IsHit(self,src,target,weather):
+    def IsHit(self,src,target,weather):
         if src.level<target.level:
             return False
         else:
@@ -46,19 +46,19 @@ class MustKillSkill(SkillBase):
 class ReboundSkill(SkillBase):
     def __init__(self,skill_series,percent,obj_of_action=ObjOfAction.TAR+ObjOfAction.SRC,info='双刃剑技能'):
         SkillBase.__init__(self,skill_series,obj_of_action,info)
-        self._percent=percent
+        self.percent=percent
     def ApplySrc(self,src,target_damage):
         print(src.GetName()+'受到反弹伤害')
-        return int(target_damage*self._percent)
+        return int(target_damage*self.percent)
 
 
 class SelfLossSkill(SkillBase):
     def __init__(self,skill_series,percent,obj_of_action=ObjOfAction.TAR+ObjOfAction.SRC,info='自损技能'):
         SkillBase.__init__(self,skill_series,obj_of_action,info)
-        self._percent=percent
+        self.percent=percent
     def ApplySrc(self,src,target_damage):
         print(src.GetName()+'受到自损伤害')
-        return int(src.HP()*self._percent)
+        return int(src.HP()*self.percent)
 
 class StockpileSkill(SkillBase):
     def __init__(self,skill_series,position=PositionEnum.PLAYGROUND,discription='',obj_of_action=ObjOfAction.TAR,info='蓄力型技能'):
@@ -85,9 +85,9 @@ class StockpileSkill(SkillBase):
 class AbsorbSkill(SkillBase):
     def __init__(self,skill_series,percent=0.5,obj_of_action=ObjOfAction.TAR+ObjOfAction.SRC,info='吸收型技能'):
         SkillBase.__init__(self,skill_series,obj_of_action,info)
-        self._percent=percent
+        self.percent=percent
     def ApplySrc(self,src,target_damage):
-        absorb_value=int(target_damage*self._percent)
+        absorb_value=int(target_damage*self.percent)
         print(src.GetName()+'吸收了'+str(absorb_value)+'点生命')
         return -1
 

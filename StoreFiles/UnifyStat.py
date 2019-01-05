@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-dir_list=['乘龙','哈克龙','快龙','暴鲤龙','白海狮','刺甲贝']
+dir_list=['乘龙']
 for dir in dir_list:
     file_path = dir+'/Stat.csv'
     file=open(file_path)

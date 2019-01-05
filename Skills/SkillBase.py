@@ -78,7 +78,7 @@ class SkillBase(Singleton):
             print('==============')
             return target_damage
         
-        if self._IsHit(src,target,weather):
+        if self.IsHit(src,target,weather):
             
             if  self._obj_of_action & ObjOfAction.SRC_ABL:
                 self.ApplySrcAblity(src)
@@ -105,7 +105,7 @@ class SkillBase(Singleton):
         print('==============')
         return target_damage
 
-    def _IsHit(self,src,target,weather):
+    def IsHit(self,src,target,weather):
         if target!=None and target.position==PositionEnum.UNDERGROUND or target.position==PositionEnum.SKY:
             return False
         if self._hit==0:
@@ -178,6 +178,9 @@ class SkillBase(Singleton):
         pass
 
     def CauseSpecialCond(self,target,percent,special_cond_enum,round=0):
+        '''
+            引发特殊的异常状态
+        '''
         if np.random.rand()<percent:
             if target.special_cond.Get(special_cond_enum)==0:
                 if round==0:
@@ -220,12 +223,20 @@ class SkillBase(Singleton):
         print(self)
 
     def __str__(self):
-        return '{}      描述:{}      属性:{}     PP:{}   威力:{}     命中率:{}      剩余PP:{}'.format(self._name,self._info,TypeEnum.ToChinese(self._type),self._pp,self._power,self._hit,self.pp)
+        return '{}      描述:{}      属性:{}     PP:{}/{}   威力:{}     命中率:{}'.format(self._name,self._info,TypeEnum.ToChinese(self._type),self.pp,self._pp,self._power,self._hit)
         
     def GetName(self):
         return self._name
     def GetPriority(self):
         return self._priority 
+    def GetType(self):
+        return self._type
+    def GetPower(self):
+        return self._power
+    def GetHit(self):
+        return self._hit
+    def GetObjOfAction(self):
+        return self._obj_of_action
 
 class SkillChart(Singleton):
     _skill_chart=None

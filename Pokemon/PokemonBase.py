@@ -5,23 +5,23 @@ class PokemonBase(object):
     def __init__(self,stat,indiv_values,type=TypeEnum.NORMAL,name='???',level=1):
         self.level=level
         
-        self._skills=[]
+        self.skills=[]
         self._type=None
         self._name=''
-        self._hp=0
-        self._attack=0
-        self._defense=0
-        self._special_attack=0
-        self._special_defense=0
-        self._speed=0
+        self._hp=1
+        self._attack=1
+        self._defense=1
+        self._special_attack=1
+        self._special_defense=1
+        self._speed=1
 
         self._stat=stat
         self._indiv_values=indiv_values
         
         self._type=type
         self._name=name
-        self.Grow(level)
         self.ResetStat()
+        self.Grow(level)
         
 
 
@@ -37,6 +37,9 @@ class PokemonBase(object):
 
     def ResetStage(self):
         self.stage.Clear()
+
+    def IsAlive(self):
+        return self.hp!=0
 
     def HP(self):
         return self._hp
@@ -60,7 +63,7 @@ class PokemonBase(object):
         return self._type
 
     def GetSkills(self):
-        return self._skills
+        return self.skills
 
     def GetName(self):
         return self._name
@@ -79,12 +82,15 @@ class PokemonBase(object):
             raise PokemonPKError()
         else:
             self.level=level
+            origin_HP=self._hp
             self._hp=int((self._stat.hp+self._indiv_values.hp)*self.level/50+10+self.level)
             self._attack=int((self._stat.attack+self._indiv_values.attack)*self.level/50+5)
             self._defense=int((self._stat.defense+self._indiv_values.defense)*self.level/50+5)
             self._special_attack=int((self._stat.special_attack+self._indiv_values.special)*self.level/50+5)
             self._special_defense=int((self._stat.special_defense+self._indiv_values.special)*self.level/50+5)
             self._speed=int((self._stat.speed+self._indiv_values.speed)*self.level/50+5)
+            if self.hp!=0:
+                self.hp=(self._hp-origin_HP)+self.hp
 
     def Down(self,stage_enum,num):
         print(self._name+'的'+self.stage.Down(stage_enum,num))
@@ -103,27 +109,27 @@ class PokemonBase(object):
                 print('you have learned',skill_name)
 
                 #如果技能数小于4，直接学会技能，否则需要进行学习判断
-                if len(self._skills)<4:
-                    self._skills.append(skill)
+                if len(self.skills)<4:
+                    self.skills.append(skill)
                 else:
                     is_finished=False
                     while not is_finished:
                         print('your skills are full. If you want to learn more skills, please forget one skill first.')
-                        self._skills.append(skill)
+                        self.skills.append(skill)
                         self.PrintSkills()
                         choose = input('your choice:')
                         choose_idx = g_d5i[choose]
-                        if ToBeSure('forget '+self._skills[choose_idx]):
-                            print('You have forgotten',self._skills[choose_idx].GetName())
+                        if ToBeSure('forget '+self.skills[choose_idx]):
+                            print('You have forgotten',self.skills[choose_idx].GetName())
                             if choose_idx<=3:
                                 print('And learned',skill_name)
-                                self._skills[choose_idx]=skill
+                                self.skills[choose_idx]=skill
                             
-                            self._skills.pop()
+                            self.skills.pop()
                             is_finished=True
                             
                         else:
-                            self._skills.pop()
+                            self.skills.pop()
                             is_finished=False
         else:
             def random_add_skills(self,skills,add_num,random_fact=0.5):
@@ -131,7 +137,7 @@ class PokemonBase(object):
                 while cnt<min(add_num,len(skills)):
                     for i,skill  in enumerate(skills):
                         if np.random.random()<random_fact**(i+1):
-                            self._skills.append(skill)
+                            self.skills.append(skill)
                             skills.pop(i)
                             cnt=cnt+1
                             break
@@ -174,12 +180,12 @@ class PokemonBase(object):
                 
 
                 
-        self.PrintSkills()
+        # self.PrintSkills()
 
     #打印所有技能
     def PrintSkills(self):
-        for i,skill in enumerate(self._skills):
-            print(i+1,' ',skill.GetInfo())
+        for i,skill in enumerate(self.skills):
+            print(i+1,' ',str(skill))
 
     def __str__(self):
         return '{}\t等级:{}    异常状态:{}    HP:{}/{}    属性:{}    攻击:{}    防御:{}    特攻:{}    特防:{}    速度:{}'.format(self._name,self.level,self.status_cond,self.hp,self._hp,TypeEnum.ToChinese(self.type),self._attack,self._defense,self._special_attack,self._special_defense,self._speed)

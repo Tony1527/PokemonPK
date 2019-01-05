@@ -4,24 +4,37 @@ from Medicine import *
 class Package(Singleton):
     def __init__(self):
         self.medicines=[]
+        self.player=None
     
     def Open(self,pokemon_list):
-        close_flag=False
-        while not close_flag:
+        print('===============')
+        print('打开背包')
+        while True:
             self.print()
-            choice=input('请选择你要使用的药剂(输入0退出背包)：')
-            if choice==0:
-                close_flag=True
-            elif choice<=len(self.medicines) and choice>0:
-                self.UseItem(choice,pokemon_list)
+            choice=input('请选择你要使用的药剂(输入0返回)：')
+            choice=a2i(choice,0,len(self.medicines))
+            if choice==-1:
+                return False
+            elif choice<len(self.medicines) and choice>=0:
+                if self.UseItem(choice,pokemon_list):
+                    return True
             else:
                 pass
+    def SetPlayer(self,player):
+        self.player=player
     
     def UseItem(self,idx,pokemon_list):
-        if self.medicines[idx].Use(pokemon):
-            pass
-            if self.medicines[idx].num==0:
-                self.medicines.pop(idx)
+        while True:
+            pokemon=pokemon_list.ChoosePM('对其使用'+self.medicines[idx].GetName())
+            #没用药
+            if pokemon==None:
+                return False
+            #用了药
+            elif self.medicines[idx].Use(pokemon):
+                if self.medicines[idx].num==0:
+                    self.medicines.pop(idx)
+                return True
+            
 
     def append(self,medicine):
         if medicine.num!=0:

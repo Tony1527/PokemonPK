@@ -45,6 +45,8 @@ try:
                    s=s+'岩石 '
                 elif flag==TypeEnum.BUG:
                    s=s+'虫 '
+                elif flag==TypeEnum.GHOST:
+                   s=s+'幽灵 '
                 elif flag==TypeEnum.FIRE:
                    s=s+'火 '
                 elif flag==TypeEnum.WATER:
