@@ -68,6 +68,7 @@ def SkillChoose(pokemon):
                 for skill in pokemon.skills:
                     if skill.pp>0:
                         struggle_flag=False
+                        break
                 if struggle_flag:
                     return Struggle()
                 else:

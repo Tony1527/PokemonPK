@@ -73,6 +73,7 @@ class StockpileSkill(SkillBase):
             print(src.GetName()+self._discription+'...')
             self._is_ready=True
             src.position=self._position
+            src.special_cond.Set(SpecialCondEnum.FORCED,1)
             return False
         self.pp=self.pp-1
         return True

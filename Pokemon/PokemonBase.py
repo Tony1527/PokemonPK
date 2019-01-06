@@ -136,6 +136,8 @@ class PokemonBase(object):
                 cnt=0
                 while cnt<min(add_num,len(skills)):
                     for i,skill  in enumerate(skills):
+                        if skill in self.skills:
+                            continue
                         if np.random.random()<random_fact**(i+1):
                             self.skills.append(skill)
                             skills.pop(i)

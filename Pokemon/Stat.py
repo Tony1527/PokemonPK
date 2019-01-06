@@ -96,6 +96,9 @@ class SpecialCond(object):
     def Get(self,special_cond_enum):
         return self._special_cond[special_cond_enum]
 
+    def Check(self,special_cond_enum):
+        return self._special_cond[special_cond_enum]!=0
+
     def Clear(self):
         self._special_cond=[0,0,0,0,0,0,0]
 '''
