@@ -218,7 +218,6 @@ class SkillBase(Singleton):
         target.hp = target.hp - damage
         if target.hp<=0:
             target.hp=0
-            print('{}倒下了'.format(target.GetName()))
     def print(self):
         print(self)
 

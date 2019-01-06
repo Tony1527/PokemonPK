@@ -8,6 +8,7 @@ sys.path.append(pk_path+"Pokemon")
 sys.path.append(pk_path+"Package")
 sys.path.append(pk_path+"Skills")
 sys.path.append(pk_path+"Fight")
+sys.path.append(pk_path+"Environment")
 sys.path.append(pk_path+"StoreFiles")
 
 from PokemonPK.Pokemon import AllPokemons
@@ -17,6 +18,7 @@ from PokemonPK.Pokemon import *
 from PokemonPK.Skills import *
 from PokemonPK.Package import *
 from PokemonPK.Fight import *
+from PokemonPK.Environment import *
 
 
 g_globals.update(globals())

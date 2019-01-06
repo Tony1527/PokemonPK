@@ -2,14 +2,13 @@ from pk_utility import *
 from pk_enums import *
 from Team import *
 from SkillFamalies import *
+from AllSkills import *
 
 class Rounds(object):
 
     def __init__(self,our_tm,enemy_tm):
         self.our_tm=our_tm
         self.enemy_tm=enemy_tm
-        self.our_pm=None
-        self.enemy_pm=None
         self.our_skill=None
         self.enemy_skill=None
         self.weather=None
@@ -31,7 +30,10 @@ class Rounds(object):
                 continue
             self._Choose()
             self._Fight()
-            return
+
+            self._End()
+            rest()
+            
 
             
         pass
@@ -40,31 +42,40 @@ class Rounds(object):
         '''
             选择攻击、道具或者交换宝可梦
         '''
-        self.ourskill=None
+        self.our_skill=None
         self.enemy_skill=None
+        our_pm = self.our_tm.pm_list.FirstAlive()
+        enemy_pm=self.enemy_tm.pm_list.FirstAlive()
 
         #我方选择
-        while(False):
-            print('[1] 战斗')
-            print('[2] 背包')
-            print('[3] 精灵')
-            choice=input('请选择你要进行的操作：')
-            choice=a2i(choice,1,3)
-            if choice<3 and choice>=0:
-                if choice == 0:
-                    retval = SkillChoose(self.our_pm)
-                    if retval!=None:
-                        self.ourskill=retval
-                        break
-                elif choice == 1:
-                    if self.our_tm.package.Open(self.our_tm.pm_list):
-                        break
-                elif choice == 2:
-                    if self.our_tm.pm_list.SwitchPM():
-                        self._Admission(self.our_tm)
-                        break
-            else:
-                pass
+        if our_pm.special_cond.Check(SpecialCondEnum.FORCED):
+            self.our_skill=our_pm.last_round.src_skill
+        else:
+            while(False):
+                print('[1] 战斗')
+                print('[2] 背包')
+                print('[3] 精灵')
+                choice=input('请选择你要进行的操作：')
+                choice=a2i(choice,1,3)
+                if choice<3 and choice>=0:
+                    if choice == 0:
+                        retval = SkillChoose(self.our_pm)
+                        if retval!=None:
+                            self.our_skill=retval
+                            break
+                    elif choice == 1:
+                        if self.our_tm.package.Open(self.our_tm.pm_list):
+                            break
+                    elif choice == 2:
+                        if our_pm.special_cond.Check(SpecialCondEnum.BOUND):
+                            print(our_pm.GetName()+'被束缚，无法下场')
+                            continue
+                        if self.our_tm.pm_list.SwitchPM():
+                            self._Admission(self.our_tm)
+                            break
+                else:
+                    pass
+        
         #敌方选择
         self._EnemyScriptChoose()
         print(self.our_skill)
@@ -113,10 +124,10 @@ class Rounds(object):
 
                 else:
                     our_speed = our_pm.Speed()
-                    enemy_speed = enermy_pm.Speed()
-                    if our_speed*our_pm.stage.Get(StageEnum.SPEED) > enermy_speed*enermy_pm.stage.Get(StageEnum.SPEED):
+                    enemy_speed = enemy_pm.Speed()
+                    if our_speed*our_pm.stage.Get(StageEnum.SPEED) > enemy_speed*enemy_pm.stage.Get(StageEnum.SPEED):
                         pass
-                    elif our_speed*our_pm.stage.Get(StageEnum.SPEED) < enermy_speed*enermy_pm.stage.Get(StageEnum.SPEED):
+                    elif our_speed*our_pm.stage.Get(StageEnum.SPEED) < enemy_speed*enemy_pm.stage.Get(StageEnum.SPEED):
                         self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather)
                         self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather)
                     else:
@@ -129,7 +140,8 @@ class Rounds(object):
                         else:
                             self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather)
                             self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather)
-                    
+            
+                  
 
     
     def _End(self):
@@ -137,7 +149,21 @@ class Rounds(object):
             1.天气变化
             2.回合结束
         '''
-        pass
+        our_pm = self.our_tm.pm_list.FirstAlive()
+        enemy_pm=self.enemy_tm.pm_list.FirstAlive()
+        if our_pm!=None and our_pm.IsAlive():
+            our_pm.status_cond.Reduce()
+            our_pm.special_cond.Reduce()
+        if enemy_pm!=None and enemy_pm.IsAlive():
+            enemy_pm.status_cond.Reduce()
+            enemy_pm.special_cond.Reduce()
+            #TODO :weather is not done
+        if self.weather:
+            self.weather=None
+            print(str(self.weather)+'消失了')
+            print(WeatherEnum.Discription(WeatherEnum.NORMAL))
+        if self.weather!=None:
+            print(WeatherEnum.Discription(self.weather))
 
     def _CheckTeam(self):
         '''
@@ -162,32 +188,48 @@ class Rounds(object):
         return end
     def _CheckAndApplySkill(self,skill,src,target,weather):
         status=src.status_cond
+        damage=0
+        apply_flag=True
+        if not(src.IsAlive() and target.IsAlive()):
+            return False
+
         if not StatusCondEnum.IsNormal(status):
             if status==StatusCondEnum.PARALYSIS:
                 if np.random.rand()<0.25:
                     print(src.GetName()+'处于麻痹状态，无法行动')
-                    return False
+                    apply_flag=False
             elif status==StatusCondEnum.SLEEP:
                 print(src.GetName()+'zzzz呼呼大睡中')
-                return False
+                apply_flag=False
             elif status==StatusCondEnum.FREEZE:
                 print(src.GetName()+'处于冻伤状态，无法行动')
-                return False
+                apply_flag=False
         special_cond=src.special_cond
         if special_cond.Check(SpecialCondEnum.STIFF):
             print(src.GetName()+'处于僵硬状态，无法行动')
-            return False
+            apply_flag=False
         elif special_cond.Check(SpecialCondEnum.CONFUSION):
             print(src.GetName()+'混乱了')
             rest()
             if np.random.rand()<0.5:
                 print(src.GetName()+'混乱中攻击了自身！')
-                Struggle().Apply(src,src,weather)
-                return True
-        elif special_cond.Check(SpecialCondEnum.FORCED):
-            return False
+                damage=Struggle().Apply(src,src,weather)
+                apply_flag=False
+        # elif special_cond.Check(SpecialCondEnum.FORCED):
+        #     return False
+        if apply_flag:
+            damage=skill.Apply(src,target,weather)
+        if target.IsAlive():
+            target.last_round.target_skill=skill
+            target.suffer_damage=damage
         else:
-            skill.Apply(src,target,weather)
+            print(target.GetName()+'倒下了...')
+        if src.IsAlive():
+            src.last_round.src_skill=skill
+        else:
+            print(src.GetName()+'倒下了...')
+        return True
+        
 
         
 
@@ -195,39 +237,41 @@ class Rounds(object):
         our_pm = self.our_tm.pm_list.FirstAlive()
         enemy_pm=self.enemy_tm.pm_list.FirstAlive()
         effect,effect_str=TypeChart.TypeVSType(our_pm.type,enemy_pm.type)
-        end_flag=False
 
         self.enemy_tm.player.MockingOnFighting()
+        if enemy_pm.special_cond.Check(SpecialCondEnum.FORCED):
+            self.enemy_skill=enemy_pm.last_round.src_skill
+            return True
+        else:
+            #优先换精灵
+            if effect>2:
+                if not enemy_pm.special_cond.Check(SpecialCondEnum.BOUND):
+                    for i,pm in enumerate(self.enemy_tm.pm_list):
+                        if pm.IsAlive() and TypeChart.TypeVSType(our_pm.type,pm.type)[0]<=2:
+                            self.enemy_tm.player.Speak('下来吧'+self.enemy_tm.pm_list.FirstAlive().GetName())
+                            self.enemy_tm.pm_list.Swap(0,i)
+                            self._Admission(self.enemy_tm)
+                            enemy_pm=pm
+                            return True
+                
+            #其次是使用药物
+            if enemy_pm.IsAlive() and enemy_pm.hp<enemy_pm.HP()*0.25:
+                medicine=FullRestore(1)
+                self.enemy_tm.player.Speak('对'+enemy_pm.GetName()+'使用了'+medicine.GetName())
+                medicine.Use(enemy_pm)
+                return True
 
-        #优先换精灵
-        if not end_flag and effect>2:
-            for i,pm in enumerate(self.enemy_tm.pm_list):
-                if pm.IsAlive() and TypeChart.TypeVSType(our_pm.type,pm.type)[0]<=2:
-                    self.enemy_tm.player.Speak('下来吧'+self.enemy_tm.pm_list.FirstAlive().GetName())
-                    self.enemy_tm.pm_list.Swap(0,i)
-                    self._Admission(self.enemy_tm)
-                    enemy_pm=pm
-                    end_flag=True
-                    break
-            
-        #其次是使用药物
-        # if not end_flag and  enemy_pm.IsAlive() and enemy_pm.hp<enemy_pm.HP()*1:
-        #     medicine=FullRestore(1)
-        #     self.enemy_tm.player.Speak('对'+enemy_pm.GetName()+'使用了'+medicine.GetName())
-        #     medicine.Use(enemy_pm)
-        #     end_flag=True
-
-        #最后是选择招式    
-        if not end_flag:
+            #最后是选择招式    
             self.enemy_skill=self._EnemyScriptSkillChoose()
-            end_flag=True
+            return True
+            
     def _EnemyScriptSkillChoose(self):
         our_pm = self.our_tm.pm_list.FirstAlive()
         enemy_pm=self.enemy_tm.pm_list.FirstAlive()
         choice=[0 for i in range(len(enemy_pm.skills))]
         struggle_flag=True
                         
-                
+        
 
         for i,skill in enumerate(enemy_pm.skills):
             if skill.pp>0:
@@ -235,7 +279,7 @@ class Rounds(object):
                 income=0
                 if skill.IsHit(enemy_pm,our_pm,self.weather): 
                     if skill.GetPower()>0:
-                        income=skill.DamageCal(enemy_pm,our_pm,self.weather)*skill.GetHit()/100
+                        income=skill.DamageCal(enemy_pm,our_pm,self.weather,is_print=False)*skill.GetHit()/100
                     if isinstance(skill,ReboundSkill) or isinstance(skill,SelfLossSkill):
                         income=income-enemy_pm.hp*skill.percent
                     obj_of_action=skill.GetObjOfAction()
@@ -255,6 +299,8 @@ class Rounds(object):
                         else:
                             income = income+15*np.random.randint(50,100)/100
                 choice[i]=income
+            else:
+                choice[i]=-1
 
         if struggle_flag:
             return Struggle()

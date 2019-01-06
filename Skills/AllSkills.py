@@ -351,8 +351,11 @@ class Mist(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('mist'),ObjOfAction.WEATHER)
 
     def ApplyWeather(self,weather):
-        weather=WeatherEnum.MIST
-        print('场地四周升起了白雾')
+        if weather!=WeatherEnum.MIST:
+            weather.Set(WeatherEnum.MIST,5)
+            print('场地四周升起了白雾')
+        else:
+            print('似乎没有什么效果')
 class WaterGun(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('watergun'))

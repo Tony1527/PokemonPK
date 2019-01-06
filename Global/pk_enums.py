@@ -172,3 +172,35 @@ class WeatherEnum(IntEnum):
     MIST=1,
     SUN=2,
     RAIN=3
+
+    def __str__(self):
+        return WeatherEnum.ToChinese(self)
+    
+    @classmethod
+    def IsNormal(cls,value):
+        return value == WeatherEnum.NORMAL
+
+    @classmethod
+    def Discription(cls,value):
+        if value == WeatherEnum.NORMAL:
+            return '天气回复了晴朗'
+        elif value==WeatherEnum.MIST:
+            return '雾很浓'
+        elif value==WeatherEnum.SUN:
+            return '日照很强'
+        elif value==WeatherEnum.RAIN:
+            return '雨继续下'
+
+    @classmethod
+    def ToChinese(cls,value):
+        if value==WeatherEnum.NORMAL:
+            return '正常'
+        elif value==WeatherEnum.MIST:
+            return '白雾'
+        elif value==WeatherEnum.SUN:
+            return '大晴天'
+        elif value==WeatherEnum.RAIN:
+            return '下雨'
+
+    
+        

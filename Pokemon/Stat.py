@@ -53,7 +53,11 @@ class IndivValues(object):
     异常状态
 '''
 class StatusCond(object):
-    
+    def __eq__(self,other):
+        if isinstance(other,StatusCondEnum):
+            return self._condition==other
+        else:
+            return self._condition==other._condition
     def __init__(self):
         self.Clear()
     
@@ -61,7 +65,7 @@ class StatusCond(object):
         if self._round>0:
             self._round=self._round-1
         if self._round==0:
-            self.condition=StatusCondEnum.NORMAL
+            self._condition=StatusCondEnum.NORMAL
     def Set(self,status_cond_enum,round):
         self._condition=status_cond_enum
         self._round=round
