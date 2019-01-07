@@ -3,6 +3,7 @@
 from pk_enums import TypeEnum,CategoryEnum
 from pk_utility import *
 from PokemonBase import PokemonBase
+from ManipulatePM import *
 
 try:
     @unique
@@ -80,18 +81,18 @@ class SkillBase(Singleton):
         
         if self.IsHit(src,target,weather):
             
-            if  self._obj_of_action & ObjOfAction.SRC_ABL:
+            if src.IsAlive() and self._obj_of_action & ObjOfAction.SRC_ABL:
                 self.ApplySrcAblity(src)
                 rest()
-            if self._obj_of_action & ObjOfAction.TAR:
+            if target.IsAlive() and self._obj_of_action & ObjOfAction.TAR:
                 target_damage = int(self.ApplyTarget(src,target,weather))
-                self.ApplyDamage(target,target_damage)
+                ApplyDamage(target,target_damage)
                 rest()
-            if  self._obj_of_action &ObjOfAction.SRC:
+            if src.IsAlive() and self._obj_of_action &ObjOfAction.SRC:
                 src_damage = int(self.ApplySrc(src,target_damage))
-                self.ApplyDamage(src,src_damage)
+                ApplyDamage(src,src_damage)
                 rest()
-            if  self._obj_of_action &ObjOfAction.TAR_ABL:
+            if target.IsAlive() and self._obj_of_action &ObjOfAction.TAR_ABL:
                 self.ApplyTargetAblity(target,weather)
                 rest()
             if  self._obj_of_action &ObjOfAction.WEATHER:
@@ -142,14 +143,17 @@ class SkillBase(Singleton):
 
         if is_critical_hit:
             addition = addition*1.5
-            
+
+        if self._category==CategoryEnum.PHYSICS and target.special_cond.Get(SpecialCondEnum.REFLECT)!=0:
+            addition=addition/2
+        if self._category==CategoryEnum.SPECIAL and target.special_cond.Get(SpecialCondEnum.LIGHT_SCREEN)!=0:
+            addition=addition/2
+        if src.status_cond.Check(StatusCondEnum.BURN):
+            addition=addition/2
         
         damage = int((((2*src.level/5+2)*self._power*A_div_D)/50+2)*modifier*addition)
 
-        if self._category==CategoryEnum.PHYSICS and target.special_cond.Get(SpecialCondEnum.REFLECT)!=0:
-            damage=int(damage/2)
-        if self._category==CategoryEnum.SPECIAL and target.special_cond.Get(SpecialCondEnum.LIGHT_SCREEN)!=0:
-            damage=int(damage/2)
+        
 
         if is_critical_hit and not effect_str==u'似乎没有效果' and is_print:
             print('命中要害')
@@ -196,28 +200,15 @@ class SkillBase(Singleton):
         if np.random.rand()<percent:
             if target.status_cond.IsNormal():
                 if round==0:
-                    round=np.random.randint(1,3)
+                    round=np.random.randint(1,4)
                 target.status_cond.Set(status_cond_enum,round)
                 print(target.GetName()+str(target.status_cond)+"了")
             else:
-                print('似乎没有什么效果')
-    def ApplyDamage(self,target,damage):
-        if damage==0:
-            print('似乎对对方没有造成什么伤害')
-            return
-        elif damage==-1:
-            return
-        delay_val=50
-        while delay_val<damage:
-            print('{}...'.format(delay_val))
-            delay_val = delay_val+10
-            if delay_val>=target.hp:
-                break
-            rest()
-        print('{}受到了{}点伤害'.format(target.GetName(),damage))
-        target.hp = target.hp - damage
-        if target.hp<=0:
-            target.hp=0
+                if percent == 1:
+                    print('似乎没有什么效果')
+                else:
+                    pass
+    
     def print(self):
         print(self)
 

@@ -51,27 +51,33 @@ def RecoverStatusCond(pokemon):
         return True
 
 
-def SkillChoose(pokemon):
-    print('===============')
-    print('选择招式')
-    while True:
-        pokemon.PrintSkills()
-        choice=input('请选择你要使用的技能(输入0返回)：')
-        choice=a2i(choice,0,len(pokemon.skills))
-        if choice==-1:
-            return None
-        elif choice<len(pokemon.skills) and choice>=0:
-            if pokemon.skills[choice].pp>0:
-                return pokemon.skills[choice]
-            else:
-                struggle_flag=True
-                for skill in pokemon.skills:
-                    if skill.pp>0:
-                        struggle_flag=False
-                        break
-                if struggle_flag:
-                    return Struggle()
-                else:
-                    print('该招式已经用完，请选择其他技能')
-        else:
-            pass
+'''
+    受到伤害后检查是否宝可梦处于濒死状态
+'''
+def Hurt(pokemon,damage=0,percent=0):
+    if percent!=0:
+        pokemon.hp = pokemon.hp - pokemon.HP()*percent    
+    if damage!=0:
+        pokemon.hp=pokemon.hp-damage
+    if pokemon.hp<0:
+        pokemon.hp=0
+    return pokemon.hp
+
+
+def ApplyDamage(target,damage):
+        damage = int(damage)
+        if damage==0:
+            print('似乎对对方没有造成什么伤害')
+            return
+        elif damage==-1:
+            return
+        delay_val=50
+        while delay_val<damage:
+            print('{}...'.format(delay_val))
+            delay_val = delay_val+10
+            if delay_val>=target.hp:
+                break
+            rest()
+        print('{}受到了{}点伤害'.format(target.GetName(),damage))
+        if Hurt(target,damage)==0:
+            print(target.GetName()+'倒下了')

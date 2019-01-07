@@ -60,28 +60,44 @@ class StatusCond(object):
             return self._condition==other._condition
     def __init__(self):
         self.Clear()
+    def __str__(self):
+        return StatusCondEnum.ToChinese(self._condition)
     
+    def Discription(self):
+        return StatusCondEnum.Discription(self._condition)
+
     def Reduce(self):
         if self._round>0:
             self._round=self._round-1
+            self._last_time=self._last_time+1
+            
         if self._round==0:
-            self._condition=StatusCondEnum.NORMAL
+            self.Clear()
     def Set(self,status_cond_enum,round):
+        if not self.IsNormal():
+            return False
         self._condition=status_cond_enum
         self._round=round
+        self._last_time=0
+        return True
 
     def Get(self):
         return self._condition
 
+    def Check(self,status_cond_enum):
+        return status_cond_enum == self._condition
+
     def Clear(self):
         self._condition=StatusCondEnum.NORMAL
         self._round=0
+        self._last_time=0
 
     def IsNormal(self):
         return StatusCondEnum.IsNormal(self._condition)
 
-    def __str__(self):
-        return StatusCondEnum.ToChinese(self._condition)
+    def LastTime(self):
+        return self._last_time
+    
 
 '''
     特殊状态

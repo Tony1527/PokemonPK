@@ -3,6 +3,8 @@ from pk_enums import *
 from Team import *
 from SkillFamalies import *
 from AllSkills import *
+from Weather import *
+from ManipulatePM import *
 
 class Rounds(object):
 
@@ -11,7 +13,9 @@ class Rounds(object):
         self.enemy_tm=enemy_tm
         self.our_skill=None
         self.enemy_skill=None
-        self.weather=None
+        self.our_life_line=True
+        self.enemy_life_line=True
+        self.weather=Weather()
         self.first=True
 
     def Round(self):
@@ -141,8 +145,28 @@ class Rounds(object):
                             self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather)
                             self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather)
             
-                  
+        #招式负面效果发动
+        if our_pm.IsAlive():
+            self._NegativeEffect(our_pm)
+        if enemy_pm.IsAlive():
+            self._NegativeEffect(enemy_pm)
 
+    def _NegativeEffect(self,pm):
+
+        if pm.status_cond.Check(StatusCondEnum.POISON):
+            print(pm.GetName()+pm.status_cond.Discription())
+            ApplyDamage(pm,pm.HP()*1/8)
+        elif pm.status_cond.Check(StatusCondEnum.BADLYPOISON):
+            print(pm.GetName()+pm.status_cond.Discription())
+            time=pm.status_cond.LastTime()+1
+            if time>15:
+                time=15
+            ApplyDamage(pm,pm.HP()*time/16)
+        elif pm.status_cond.Check(StatusCondEnum.BURN):
+            print(pm.GetName()+pm.status_cond.Discription())
+            ApplyDamage(pm,pm.HP()*1/16)
+
+        
     
     def _End(self):
         '''
@@ -157,13 +181,17 @@ class Rounds(object):
         if enemy_pm!=None and enemy_pm.IsAlive():
             enemy_pm.status_cond.Reduce()
             enemy_pm.special_cond.Reduce()
-            #TODO :weather is not done
-        if self.weather:
-            self.weather=None
-            print(str(self.weather)+'消失了')
-            print(WeatherEnum.Discription(WeatherEnum.NORMAL))
         if self.weather!=None:
-            print(WeatherEnum.Discription(self.weather))
+            last_weather=self.weather.Get()
+            self.weather.Reduce()
+            if self.weather!=last_weather:
+                print(self.weather.Discription())
+            else:
+                if self.weather.IsNormal():
+                    pass
+                else:
+                    print(self.weather.Discription())
+                
 
     def _CheckTeam(self):
         '''
@@ -196,23 +224,23 @@ class Rounds(object):
         if not StatusCondEnum.IsNormal(status):
             if status==StatusCondEnum.PARALYSIS:
                 if np.random.rand()<0.25:
-                    print(src.GetName()+'处于麻痹状态，无法行动')
+                    print(src.GetName()+src.status_cond.Discription())
                     apply_flag=False
             elif status==StatusCondEnum.SLEEP:
-                print(src.GetName()+'zzzz呼呼大睡中')
+                print(src.GetName()+src.status_cond.Discription())
                 apply_flag=False
             elif status==StatusCondEnum.FREEZE:
-                print(src.GetName()+'处于冻伤状态，无法行动')
+                print(src.GetName()+src.status_cond.Discription())
                 apply_flag=False
         special_cond=src.special_cond
         if special_cond.Check(SpecialCondEnum.STIFF):
-            print(src.GetName()+'处于僵硬状态，无法行动')
+            print(src.GetName()+SpecialCondEnum.Discription(src.special_cond.Get(SpecialCondEnum.STIFF)))
             apply_flag=False
         elif special_cond.Check(SpecialCondEnum.CONFUSION):
             print(src.GetName()+'混乱了')
             rest()
             if np.random.rand()<0.5:
-                print(src.GetName()+'混乱中攻击了自身！')
+                print(src.GetName()+SpecialCondEnum.Discription(src.special_cond.Get(SpecialCondEnum.CONFUSION)))
                 damage=Struggle().Apply(src,src,weather)
                 apply_flag=False
         # elif special_cond.Check(SpecialCondEnum.FORCED):
@@ -222,16 +250,16 @@ class Rounds(object):
         if target.IsAlive():
             target.last_round.target_skill=skill
             target.suffer_damage=damage
-        else:
-            print(target.GetName()+'倒下了...')
         if src.IsAlive():
             src.last_round.src_skill=skill
-        else:
-            print(src.GetName()+'倒下了...')
-        return True
         
+    #     self._CheckLifeLine(target)
+    #     self._CheckLifeLine(src)
 
-        
+    # def _CheckLifeLine(self,pm):
+    #     if not pm.IsAlive() and pm.life_line:
+    #         print(pm.GetName()+'倒下了...')
+    #         pm.life_line=False
 
     def _EnemyScriptChoose(self):
         our_pm = self.our_tm.pm_list.FirstAlive()

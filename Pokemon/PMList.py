@@ -72,3 +72,27 @@ class PMList(object):
             print('['+str(i+1)+'] '+str(pokemon))
 
     
+def SkillChoose(pokemon):
+    print('===============')
+    print('选择招式')
+    while True:
+        pokemon.PrintSkills()
+        choice=input('请选择你要使用的技能(输入0返回)：')
+        choice=a2i(choice,0,len(pokemon.skills))
+        if choice==-1:
+            return None
+        elif choice<len(pokemon.skills) and choice>=0:
+            if pokemon.skills[choice].pp>0:
+                return pokemon.skills[choice]
+            else:
+                struggle_flag=True
+                for skill in pokemon.skills:
+                    if skill.pp>0:
+                        struggle_flag=False
+                        break
+                if struggle_flag:
+                    return Struggle()
+                else:
+                    print('该招式已经用完，请选择其他技能')
+        else:
+            pass

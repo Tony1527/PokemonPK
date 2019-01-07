@@ -7,7 +7,13 @@ class Weather(object):
         if isinstance(other,WeatherEnum):
             return self._weather==other
         else:
-            return self._weather==other._weather
+            if isinstance(other,Weather):
+                return self._weather==other._weather
+            else:
+                return False
+
+    def __str__(self):
+        return str(self._weather)
     
     def Reduce(self):
         if self._round>0:
@@ -27,3 +33,6 @@ class Weather(object):
 
     def IsNormal(self):
         return WeatherEnum.IsNormal(self._weather)
+    
+    def Discription(self):
+        return WeatherEnum.Discription(self._weather)

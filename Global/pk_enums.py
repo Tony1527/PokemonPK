@@ -107,6 +107,23 @@ class StatusCondEnum(IntEnum):
         elif stat_condition==StatusCondEnum.SLEEP:
             return '呼呼大睡'
 
+    @classmethod
+    def Discription(cls,value):
+        if value == StatusCondEnum.NORMAL:
+            return '正常'
+        elif value==StatusCondEnum.BURN:
+            return '处于灼烧状态'
+        elif value==StatusCondEnum.FREEZE:
+            return '处于冻伤状态，无法行动'
+        elif value==StatusCondEnum.PARALYSIS:
+            return '处于麻痹状态，无法行动'
+        elif value==StatusCondEnum.POISON:
+            return '处于中毒状态'
+        elif value==StatusCondEnum.BADLYPOISON:
+            return '处于中剧毒状态'
+        elif value==StatusCondEnum.SLEEP:
+            return 'zzzz呼呼大睡中'
+
 class SpecialCondEnum(IntEnum):
     STIFF=0,
     FORCED=1,
@@ -132,6 +149,23 @@ class SpecialCondEnum(IntEnum):
             return '被光墙包围'
         elif value==SpecialCondEnum.REFLECT:
             return '被反射壁包围'
+
+    @classmethod
+    def Discription(cls,value):
+        if value == SpecialCondEnum.CONFUSION:
+            return '混乱中攻击了自身'
+        elif value==SpecialCondEnum.BOUND:
+            return '被紧紧束缚，无法脱身'
+        elif value==SpecialCondEnum.FORCED:
+            return '处于强制攻击状态'
+        elif value==SpecialCondEnum.STIFF:
+            return '处于僵硬状态，无法行动'
+        elif value==SpecialCondEnum.PARASITIC:
+            return '被寄生种子寄生'
+        elif value==SpecialCondEnum.LIGHT_SCREEN:
+            return '被光墙包围，特殊攻击伤害减弱'
+        elif value==SpecialCondEnum.REFLECT:
+            return '被反射壁包围，物理攻击伤害减弱'
         
 
 class StageEnum(IntEnum):

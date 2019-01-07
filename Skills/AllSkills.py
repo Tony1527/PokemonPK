@@ -150,7 +150,7 @@ class JumpKick(SkillBase):
     def SideEffect(self,src,target):
         print(src.GetName()+'受到副作用')
         target_damage = self.ApplyTarget(src,target,None)
-        self.ApplyDamage(src,target_damage//8)
+        ApplyDamage(src,target_damage//8)
 
 
 class RollingKick(SkillBase):
@@ -294,7 +294,7 @@ class Sing(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('Sing'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.SLEEP)
+        self.CauseStatusCond(target,0.1,StatusCondEnum.SLEEP)
 
 
 class Supersonic(SkillBase):
@@ -970,7 +970,7 @@ class HighJumpKick(SkillBase):
     def SideEffect(self,src,target):
         print(src.GetName()+'受到副作用')
         target_damage = self.ApplyTarget(src,target,None)
-        self.ApplyDamage(src,target_damage//8)
+        ApplyDamage(src,target_damage//8)
 
 
 class Glare(SkillBase):
