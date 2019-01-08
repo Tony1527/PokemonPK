@@ -69,14 +69,16 @@ class SkillBase(Singleton):
     def SetDefault(self):
         self.is_ready=True
 
-    def Apply(self,src=None,target=None,weather=None):
+    def Apply(self,src=None,target=None,weather=None,is_print=True):
         # if (src!=None and target!=None) and not (isinstance(src,PokemonBase) and isinstance(target,PokemonBase)):
         #     raise ValueError('src or target must be derived from SkillBase')
         target_damage=0
-        print('{}使用{}'.format(src.GetName(),self._name))
+        if is_print:
+            print('{}使用{}'.format(src.GetName(),self._name))
         if not self.PreApply(src,target,weather):
             rest()
-            print('==============')
+            if is_print:
+                print('==============')
             return target_damage
         
         if self.IsHit(src,target,weather):
@@ -99,11 +101,13 @@ class SkillBase(Singleton):
                 self.ApplyWeather(weather)
                 rest()
         else:
-            print('{}躲开了'.format(target.GetName()))
+            if is_print:
+                print('{}躲开了'.format(target.GetName()))
             self.SideEffect(src,target)
             rest()
         self.PostApply(src,target,weather)
-        print('==============')
+        if is_print:
+            print('==============')
         return target_damage
 
     def IsHit(self,src,target,weather):
@@ -181,22 +185,23 @@ class SkillBase(Singleton):
     def ApplyWeather(self,weather):
         pass
 
-    def CauseSpecialCond(self,target,percent,special_cond_enum,round=0):
+    def CauseSpecialCond(self,target,percent,special_cond_enum,round=0,is_print=False):
         '''
             引发特殊的异常状态
         '''
         if np.random.rand()<percent:
             if target.special_cond.Get(special_cond_enum)==0:
                 if round==0:
-                    round=np.random.randint(1,4)
+                    round=np.random.randint(2,5)
                 target.special_cond.Set(special_cond_enum,round)
                 print(target.GetName()+SpecialCondEnum.ToChinese(special_cond_enum)+"了")
             else:
-                print(target.GetName()+'已经'+SpecialCondEnum.ToChinese(special_cond_enum)+"了")
+                if is_print:
+                    print(target.GetName()+'已经'+SpecialCondEnum.ToChinese(special_cond_enum)+"了")
             
                 
 
-    def CauseStatusCond(self,target,percent,status_cond_enum,round=0):
+    def CauseStatusCond(self,target,percent,status_cond_enum,round=0,is_print=False):
         if np.random.rand()<percent:
             if target.status_cond.IsNormal():
                 if round==0:
@@ -204,7 +209,7 @@ class SkillBase(Singleton):
                 target.status_cond.Set(status_cond_enum,round)
                 print(target.GetName()+str(target.status_cond)+"了")
             else:
-                if percent == 1:
+                if is_print:
                     print('似乎没有什么效果')
                 else:
                     pass

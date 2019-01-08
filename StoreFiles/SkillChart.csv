@@ -160,3 +160,4 @@ ChineseName,EnglishName,Type,Category,Power,Hit,PP
 愤怒门牙,SuperFang,NORMAL,PHYSICS,-,90,10
 劈开,Slash,NORMAL,PHYSICS,70,100,20
 挣扎,Struggle,NORMAL,PHYSICS,50,-,30
+自残,SelfHarm,NORMAL,PHYSICS,40,-,30

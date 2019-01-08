@@ -22,6 +22,9 @@ class PMList(object):
                     return pm
         return None
 
+    def Front(self):
+        return self._pm_list[0]
+
     def ChoosePM(self,msg='指定'):
         while True:
             self.print()
@@ -55,6 +58,12 @@ class PMList(object):
             if x == pokemon:
                 return i
         raise ValueError('pokemon isn\'t found in pm_list')
+
+    def Choose(self,pokemon):
+        idx=self._GetIdxOfPM(pokemon)
+        if idx!=0:
+            self.Swap(0,idx)
+        
 
     def Swap(self,a,b):
         self._pm_list[b],self._pm_list[a]=self._pm_list[a],self._pm_list[b]

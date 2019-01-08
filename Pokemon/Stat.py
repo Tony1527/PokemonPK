@@ -67,12 +67,16 @@ class StatusCond(object):
         return StatusCondEnum.Discription(self._condition)
 
     def Reduce(self):
+        retval=''
         if self._round>0:
             self._round=self._round-1
             self._last_time=self._last_time+1
-            
-        if self._round==0:
-            self.Clear()
+            if self._round==0:
+                retval = StatusCondEnum.BackToNormal(self._condition)
+                self.Clear()    
+                
+        return retval
+        
     def Set(self,status_cond_enum,round):
         if not self.IsNormal():
             return False
@@ -107,9 +111,14 @@ class SpecialCond(object):
         self.Clear()
     
     def Reduce(self):
+        retval=''
         for i in range(len(self._special_cond)):
             if self._special_cond[i]>0:
                 self._special_cond[i]=self._special_cond[i]-1
+                if self._special_cond[i]==0:
+                    retval = SpecialCondEnum.BackToNormal(i)
+                    self.Clear()  
+        return retval
     def Set(self,special_cond_enum,num):
         self._special_cond[special_cond_enum]=num
 
@@ -191,8 +200,8 @@ class Stage(object):
         
 class LastRound(object):
     def __init__(self):
-        self.target_skill=''
-        self.src_skill=''
+        self.target_skill=None
+        self.src_skill=None
         self.suffer_damage=0
     
 

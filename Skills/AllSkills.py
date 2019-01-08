@@ -301,7 +301,7 @@ class Supersonic(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('supersonic'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseSpecialCond(target,1,SpecialCondEnum.CONFUSION)
+        self.CauseSpecialCond(target,1,SpecialCondEnum.CONFUSION,is_print=True)
 
 
 class SonicBoom(SkillBase):
@@ -415,9 +415,9 @@ class AuroraBeam(SkillBase):
 
 class HyperBeam(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('hyperbeam'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('hyperbeam'),ObjOfAction.TAR+ObjOfAction.SRC_ABL)
     def ApplySrcAblity(self,src):
-        self.CauseSpecialCond(target,1,SpecialCondEnum.STIFF,1)
+        self.CauseSpecialCond(src,1,SpecialCondEnum.STIFF,2)
 
 
 class Peck(SkillBase):
@@ -501,21 +501,21 @@ class PoisonPowder(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('PoisonPowder'),ObjOfAction.TAR_ABL)
 
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.POISON)
+        self.CauseStatusCond(target,1,StatusCondEnum.POISON,is_print=True)
 
 
 class StunSpore(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('StunSpore'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.PARALYSIS)
+        self.CauseStatusCond(target,1,StatusCondEnum.PARALYSIS,is_print=True)
 
 class SleepPowder(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('SleepPowder'),ObjOfAction.TAR_ABL)
 
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.SLEEP)
+        self.CauseStatusCond(target,1,StatusCondEnum.SLEEP,is_print=True)
 
 
 
@@ -545,7 +545,7 @@ class FireSpin(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('firespin'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseSpecialCond(target,1,SpecialCondEnum.BOUND)
+        self.CauseSpecialCond(target,1,SpecialCondEnum.BOUND,is_print=True)
 
 
 class ThunderShock(SkillBase):
@@ -619,7 +619,7 @@ class Toxic(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('Toxic'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.BADLYPOISON)
+        self.CauseStatusCond(target,1,StatusCondEnum.BADLYPOISON,round=np.random.randint(2,7),is_print=True)
 
 class Confusion(SkillBase):
     def __init__(self):
@@ -642,7 +642,7 @@ class Hypnosis(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('hypnosis'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.SLEEP)
+        self.CauseStatusCond(target,1,StatusCondEnum.SLEEP,is_print=True)
 
 
 
@@ -743,7 +743,7 @@ class ConfuseRay(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('confuseray'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseSpecialCond(target,1,SpecialCondEnum.CONFUSION)
+        self.CauseSpecialCond(target,1,SpecialCondEnum.CONFUSION,is_print=True)
 
 class Withdraw(SkillBase):
     def __init__(self):
@@ -767,7 +767,7 @@ class LightScreen(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('lightscreen'),ObjOfAction.SRC_ABL)
     def ApplySrcAblity(self,src):
-        self.CauseSpecialCond(src,1,SpecialCondEnum.LIGHT_SCREEN,5)
+        self.CauseSpecialCond(src,1,SpecialCondEnum.LIGHT_SCREEN,5,is_print=True)
 
 
 class Haze(SkillBase):
@@ -784,7 +784,7 @@ class Reflect(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('reflect'),ObjOfAction.SRC_ABL)
     def ApplySrcAblity(self,src):
-        self.CauseSpecialCond(src,1,SpecialCondEnum.REFLECT,5)
+        self.CauseSpecialCond(src,1,SpecialCondEnum.REFLECT,5,is_print=True)
 
 
 class FocusEnergy(SkillBase):
@@ -849,7 +849,7 @@ class MirrorMove(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('MirrorMove'))
     def Apply(self,src=None,target=None,weather=None):
-        name=target.last_round.src_skill
+        name=target.last_round.src_skill.GetName()
         if name=='双倍奉还' or name=='挣扎' or name=='鹦鹉学舌' or name=='':
             print(src.GetName()+'使用鹦鹉学舌失败')
             print('==============')
@@ -908,7 +908,7 @@ class Clamp(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('clamp'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseSpecialCond(target,1,SpecialCondEnum.BOUND)
+        self.CauseSpecialCond(target,1,SpecialCondEnum.BOUND,is_print=True)
 
 
 class Swift(SkillBase):
@@ -977,7 +977,7 @@ class Glare(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('glare'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.PARALYSIS)
+        self.CauseStatusCond(target,1,StatusCondEnum.PARALYSIS,is_print=True)
 
 
 class DreamEater(AbsorbSkill):
@@ -997,7 +997,7 @@ class PoisonGas(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('poisongas'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.POISON)
+        self.CauseStatusCond(target,1,StatusCondEnum.POISON,is_print=True)
 
 
 class Barrage(MultiHitSkill):
@@ -1014,7 +1014,7 @@ class LovelyKiss(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('lovelykiss'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.SLEEP)
+        self.CauseStatusCond(target,1,StatusCondEnum.SLEEP,is_print=True)
 
 
 class SkyAttack(StockpileSkill,EasyCriticalHitSkill):
@@ -1051,7 +1051,7 @@ class Spore(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('spore'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.SLEEP)
+        self.CauseStatusCond(target,1,StatusCondEnum.SLEEP,is_print=True)
 
 
 class Flash(SkillBase):
@@ -1112,6 +1112,7 @@ class Rest(SkillBase):
             print('似乎没有什么效果')
             return False
         else:
+            self.pp=self.pp-1
             return True
     def ApplySrcAblity(self,src):
         print(src.GetName()+'回复了'+RecoverAllHP(src)+'点HP')
@@ -1179,8 +1180,10 @@ class Struggle(SelfLossSkill):
     def __init__(self):
         SelfLossSkill.__init__(self,SkillChart.GetSkillSeries('struggle'),1/4)
 
-
-
-
+class SelfHarm(SkillBase):
+    def __init__(self):
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('SelfHarm'),ObjOfAction.SRC)
+    def ApplySrc(self,src,target_damage):
+        return self.DamageCal(src,src,None)
 
 

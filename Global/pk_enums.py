@@ -65,7 +65,15 @@ try:
 except ValueError as e:
     print(e)
 
+class ConditionEnum(IntEnum):
 
+    def __str__(self):
+        return self.ToChinese(self)
+    @classmethod
+    def ToChinese(cls,value):
+        return ''
+
+    
 
 class CategoryEnum(IntEnum):
     PHYSICS=0,
@@ -77,7 +85,7 @@ class CategoryEnum(IntEnum):
         elif category==SPECIAL:
             return '特殊'
 
-class StatusCondEnum(IntEnum):
+class StatusCondEnum(ConditionEnum):
     NORMAL=0,
     BURN=1,
     FREEZE=2,
@@ -85,26 +93,26 @@ class StatusCondEnum(IntEnum):
     POISON=4,
     BADLYPOISON=5,
     SLEEP=6
+
     @classmethod
     def IsNormal(cls,status_cond):
         return status_cond==StatusCondEnum.NORMAL
 
-
     @classmethod
-    def ToChinese(cls,stat_condition):
-        if stat_condition==StatusCondEnum.NORMAL:
+    def ToChinese(cls,value):
+        if value==StatusCondEnum.NORMAL:
             return '正常'
-        elif stat_condition==StatusCondEnum.BURN:
+        elif value==StatusCondEnum.BURN:
             return '烧伤'
-        elif stat_condition==StatusCondEnum.FREEZE:
+        elif value==StatusCondEnum.FREEZE:
             return '冻伤'
-        elif stat_condition==StatusCondEnum.PARALYSIS:
+        elif value==StatusCondEnum.PARALYSIS:
             return '麻痹'
-        elif stat_condition==StatusCondEnum.POISON:
+        elif value==StatusCondEnum.POISON:
             return '中毒'
-        elif stat_condition==StatusCondEnum.BADLYPOISON:
+        elif value==StatusCondEnum.BADLYPOISON:
             return '剧毒'
-        elif stat_condition==StatusCondEnum.SLEEP:
+        elif value==StatusCondEnum.SLEEP:
             return '呼呼大睡'
 
     @classmethod
@@ -124,7 +132,24 @@ class StatusCondEnum(IntEnum):
         elif value==StatusCondEnum.SLEEP:
             return 'zzzz呼呼大睡中'
 
-class SpecialCondEnum(IntEnum):
+    @classmethod
+    def BackToNormal(cls,value):
+        if value==StatusCondEnum.NORMAL:
+            return ''
+        elif value==StatusCondEnum.BURN:
+            return '从灼烧状态中解除'
+        elif value==StatusCondEnum.FREEZE:
+            return '从冰冻状态中解除'
+        elif value==StatusCondEnum.PARALYSIS:
+            return '从麻痹状态中解除'
+        elif value==StatusCondEnum.POISON:
+            return '从中毒状态中解除'
+        elif value==StatusCondEnum.BADLYPOISON:
+            return '从剧毒状态中解除'
+        elif value==StatusCondEnum.SLEEP:
+            return '清醒了'
+
+class SpecialCondEnum(ConditionEnum):
     STIFF=0,
     FORCED=1,
     BOUND=2,
@@ -166,6 +191,23 @@ class SpecialCondEnum(IntEnum):
             return '被光墙包围，特殊攻击伤害减弱'
         elif value==SpecialCondEnum.REFLECT:
             return '被反射壁包围，物理攻击伤害减弱'
+
+    @classmethod
+    def BackToNormal(cls,value):
+        if value == SpecialCondEnum.CONFUSION:
+            return '混乱解除了'
+        elif value==SpecialCondEnum.BOUND:
+            return '从束缚中挣脱了'
+        elif value==SpecialCondEnum.FORCED:
+            return ''
+        elif value==SpecialCondEnum.STIFF:
+            return '身体的僵硬感解除了'
+        elif value==SpecialCondEnum.PARASITIC:
+            return '寄生种子消失了'
+        elif value==SpecialCondEnum.LIGHT_SCREEN:
+            return '光墙消失了'
+        elif value==SpecialCondEnum.REFLECT:
+            return '反射壁消失了'
         
 
 class StageEnum(IntEnum):
