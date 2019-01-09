@@ -95,3 +95,26 @@ class AbsorbSkill(SkillBase):
 class EasyCriticalHitSkill(SkillBase):
     def _IsCriticalHit(self,src,target):
         return np.random.rand()<src.GetStat().speed*4/256*src.stage.Get(StageEnum.CRITICAL_HITS)
+
+class SrcBuffUp(SkillBase):
+    def __init__(self,skill_series,stage_enum,value,percent=1,obj_of_action=ObjOfAction.SRC_ABL,info='自身buff提升型技能'):
+        SkillBase.__init__(self,skill_series,obj_of_action,info)
+        self.stage_enum=stage_enum
+        self.value=value
+        self.percent=percent
+    def ApplySrcAblity(self,src):
+        if np.random.random()<self.percent:
+            src.Up(self.stage_enum,self.value)
+
+class TargetBuffDown(SkillBase):
+    def __init__(self,skill_series,stage_enum,value,percent=1,obj_of_action=ObjOfAction.TAR_ABL,info='对方buff削减型技能'):
+        SkillBase.__init__(self,skill_series,obj_of_action,info)
+        self.stage_enum=stage_enum
+        self.value=value
+        self.percent=percent
+    def ApplyTargetAblity(self,target,weather):
+        if np.random.random()<self.percent:
+            if weather!=WeatherEnum.MIST:
+                target.Down(self.stage_enum,self.value)
+            else:
+                print('由于白雾效果，宝可梦的能力阶级不会下降')

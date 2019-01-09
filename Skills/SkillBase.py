@@ -185,7 +185,8 @@ class SkillBase(Singleton):
     def ApplyWeather(self,weather):
         pass
 
-    def CauseSpecialCond(self,target,percent,special_cond_enum,round=0,is_print=False):
+    @classmethod
+    def CauseSpecialCond(cls,target,percent,special_cond_enum,round=0,is_print=False):
         '''
             引发特殊的异常状态
         '''
@@ -200,8 +201,8 @@ class SkillBase(Singleton):
                     print(target.GetName()+'已经'+SpecialCondEnum.ToChinese(special_cond_enum)+"了")
             
                 
-
-    def CauseStatusCond(self,target,percent,status_cond_enum,round=0,is_print=False):
+    @classmethod
+    def CauseStatusCond(cls,target,percent,status_cond_enum,round=0,is_print=False):
         if np.random.rand()<percent:
             if target.status_cond.IsNormal():
                 if round==0:

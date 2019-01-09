@@ -133,18 +133,18 @@ class Rounds(object):
             if self.enemy_skill==None:
                 pass
             else:
-                self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather)
+                self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
         else:
             if self.enemy_skill==None:
-                self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather)
+                self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
             else:
                 if self.enemy_skill.GetPriority()>self.our_skill.GetPriority():
-                    self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather)
-                    self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather)
+                    self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
+                    self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
 
                 elif self.enemy_skill.GetPriority()<self.our_skill.GetPriority():
-                    self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather)
-                    self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather)
+                    self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
+                    self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
 
                 else:
                     our_speed = our_pm.Speed()
@@ -152,26 +152,27 @@ class Rounds(object):
                     if our_speed*our_pm.stage.Get(StageEnum.SPEED) > enemy_speed*enemy_pm.stage.Get(StageEnum.SPEED):
                         pass
                     elif our_speed*our_pm.stage.Get(StageEnum.SPEED) < enemy_speed*enemy_pm.stage.Get(StageEnum.SPEED):
-                        self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather)
-                        self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather)
+                        self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
+                        self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
                     else:
                         if our_speed > enemy_speed:
-                            self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather)
-                            self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather)
+                            self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
+                            self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
                         elif our_speed < enemy_speed:
-                            self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather)
-                            self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather)
+                            self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
+                            self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
                         else:
-                            self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather)
-                            self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather)
-            
+                            self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
+                            self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
+        our_pm = self.our_tm.pm_list.Front()
+        enemy_pm=self.enemy_tm.pm_list.Front()
         #招式负面效果发动
         if our_pm.IsAlive():
-            self._NegativeEffect(our_pm)
+            self._NegativeEffect(our_pm,enemy_pm)
         if enemy_pm.IsAlive():
-            self._NegativeEffect(enemy_pm)
+            self._NegativeEffect(enemy_pm,our_pm)
 
-    def _NegativeEffect(self,pm):
+    def _NegativeEffect(self,pm,opposite_pm):
 
         if pm.status_cond.Check(StatusCondEnum.POISON):
             print(pm.GetName()+pm.status_cond.Discription())
@@ -186,6 +187,13 @@ class Rounds(object):
             print(pm.GetName()+pm.status_cond.Discription())
             ApplyDamage(pm,pm.HP()*1/16)
 
+        if pm.special_cond.Check(SpecialCondEnum.PARASITIC):
+            print(pm.GetName()+SpecialCondEnum.Discription(SpecialCondEnum.PARASITIC))
+            ApplyDamage(pm,pm.HP()*1/16)
+            if opposite_pm.IsAlive():
+                print(opposite_pm.GetName()+'吸收了力量，回复了'+RecoverHP(opposite_pm,pm.HP()*1/16)+'点HP')
+
+
         
     
     def _End(self):
@@ -193,26 +201,28 @@ class Rounds(object):
             1.天气变化
             2.回合结束
         '''
-        our_pm = self.our_tm.pm_list.FirstAlive()
-        enemy_pm=self.enemy_tm.pm_list.FirstAlive()
+        our_pm = self.our_tm.pm_list.Front()
+        enemy_pm=self.enemy_tm.pm_list.Front()
 
         #状态数减1
-        if our_pm!=None and our_pm.IsAlive():
-            retval=our_pm.status_cond.Reduce()
-            if retval!='':
-                print(our_pm.GetName()+retval)
+        self._ReduceCondRound(our_pm)
+        self._ReduceCondRound(enemy_pm)
+        # if our_pm.IsAlive():
+        #     retval=our_pm.status_cond.Reduce()
+        #     if retval!='':
+        #         print(our_pm.GetName()+retval)
 
-            retval=our_pm.special_cond.Reduce()
-            if retval!='':
-                print(our_pm.GetName()+retval)
-        if enemy_pm!=None and enemy_pm.IsAlive():
-            retval=enemy_pm.status_cond.Reduce()
-            if retval!='':
-                print(enemy_pm.GetName()+retval)
+        #     retval=our_pm.special_cond.Reduce()
+        #     if retval!='':
+        #         print(our_pm.GetName()+retval)
+        # if enemy_pm.IsAlive():
+        #     retval=enemy_pm.status_cond.Reduce()
+        #     if retval!='':
+        #         print(enemy_pm.GetName()+retval)
 
-            retval=enemy_pm.special_cond.Reduce()
-            if retval!='':
-                print(enemy_pm.GetName()+retval)
+        #     retval=enemy_pm.special_cond.Reduce()
+        #     if retval!='':
+        #         print(enemy_pm.GetName()+retval)
         if self.weather!=None:
             last_weather=self.weather.Get()
             self.weather.Reduce()
@@ -225,7 +235,24 @@ class Rounds(object):
                     print(self.weather.Discription())
 
         
-        
+    def _ReduceCondRound(self,pm):
+        if pm.IsAlive():
+            retval=pm.status_cond.Reduce()
+            if retval!='':
+                print(pm.GetName()+retval)
+
+            is_forced_before=pm.special_cond.Check(SpecialCondEnum.FORCED)
+
+            retval=pm.special_cond.Reduce()
+            if retval!='':
+                print(pm.GetName()+retval)
+
+            is_forced_later=pm.special_cond.Check(SpecialCondEnum.FORCED)
+
+            if is_forced_before and not is_forced_later and pm.last_round.src_skill !=None and pm.last_round.src_skill.GetName()=='大闹一番':
+                print(pm.GetName()+'闹得头晕目眩')
+                SkillBase.CauseSpecialCond(pm,1,SpecialCondEnum.CONFUSION)
+
                 
 
     def _CheckTeam(self):
@@ -249,7 +276,7 @@ class Rounds(object):
             print('你输了...')
             return True
         return end
-    def _CheckAndApplySkill(self,skill,src,target,weather):
+    def _CheckAndApplySkill(self,skill,src,target,weather,src_tm,target_tm):
         status=src.status_cond
         damage=0
         apply_flag=True
@@ -287,9 +314,14 @@ class Rounds(object):
                 print(target.GetName()+'被激怒了')
                 print(target.GetName()+target.stage.Up(StageEnum.ATTACK,1))
             target.last_round.target_skill=skill
-            target.suffer_damage=damage
+            target.last_round.suffer_damage=damage
         if src.IsAlive():
             src.last_round.src_skill=skill
+        if skill.GetName()=='吹飞' or skill.GetName()=='吼叫':
+            print(target.GetName()+'被强制下场')
+            target_tm.pm_list.Choose(target_tm.pm_list.LastAlive())
+            self._Admission(target_tm)
+        
         
 
     def _EnemyScriptChoose(self):

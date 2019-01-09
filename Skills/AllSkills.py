@@ -66,12 +66,10 @@ class RazorWind(StockpileSkill,EasyCriticalHitSkill):
     def __init__(self):
         StockpileSkill.__init__(self,SkillChart.GetSkillSeries('RazorWind'),discription='蓄力中')
 
-class SwordsDance(SkillBase):
+class SwordsDance(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('SwordsDance'),ObjOfAction.SRC_ABL)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('SwordsDance'),StageEnum.ATTACK,2)
     
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.ATTACK,2)
 
 
 class Cut(SkillBase):
@@ -99,13 +97,10 @@ class WingAttack(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('WingAttack'))
 
-#TODO :implement the classs
 class Whirlwind(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('WhirlWind'),ObjOfAction.TAR_ABL)
         self._priority=-6
-    def ApplyTargetAblity(self,target,weather):
-        target.is_playing=False
 
 class Fly(StockpileSkill):
     def __init__(self):
@@ -158,15 +153,10 @@ class RollingKick(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('rollingkick'))
 
 
-class SandAttack(SkillBase):
+class SandAttack(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('sandattack'),ObjOfAction.TAR_ABL)
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('sandattack'),StageEnum.HIT,1)
     
-    def ApplyTargetAblity(self,target,weather):
-        if weather!=WeatherEnum.MIST:
-            target.Down(StageEnum.HIT,1)
-        else:
-            print('由于白雾效果，宝可梦的能力阶级不会下降')
 
 class Headbutt(SkillBase):
     def __init__(self):
@@ -211,12 +201,11 @@ class TakeDown(ReboundSkill):
     def __init__(self):
         ReboundSkill.__init__(self,SkillChart.GetSkillSeries('takedown'),1/4)
 
-#TODO :sideeffect
 class Thrash(SkillBase):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('Thrash'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        self.CauseSpecialCond(target,1,SpecialCondEnum.FORCED,np.random.randint(2,4))
+        SkillBase.__init__(self,SkillChart.GetSkillSeries('Thrash'),ObjOfAction.TAR+ObjOfAction.SRC_ABL)
+    def ApplySrcAblity(self,src):
+        self.CauseSpecialCond(src,1,SpecialCondEnum.FORCED,np.random.randint(2,4))
 
 
 class DoubleEdge(ReboundSkill):
@@ -224,14 +213,9 @@ class DoubleEdge(ReboundSkill):
         ReboundSkill.__init__(self,SkillChart.GetSkillSeries('doubleedge'),1/3)
 
 
-class TailWhip(SkillBase):
+class TailWhip(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('TailWhip'),ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if weather!=WeatherEnum.MIST:
-            target.Down(StageEnum.DEFENSE,1)
-        else:
-            print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('TailWhip'),StageEnum.DEFENSE,1)
         
 
 
@@ -254,14 +238,9 @@ class PinMissile(MultiHitSkill):
         MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('pinmissile'))
 
 
-class Leer(SkillBase):
+class Leer(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('leer'),ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if weather!=WeatherEnum.MIST:
-            target.Down(StageEnum.DEFENSE,1)
-        else:
-            print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('leer'),StageEnum.DEFENSE,1)
         
 
 
@@ -270,31 +249,23 @@ class Bite(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('bite'))
 
 
-class Growl(SkillBase):
+class Growl(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('growl'),ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if weather!=WeatherEnum.MIST:
-            target.Down(StageEnum.ATTACK,1)
-        else:
-            print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('growl'),StageEnum.ATTACK,1)
         
 
-#TODO :changed is_playing
+
 class Roar(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('roar'),ObjOfAction.TAR_ABL)
         self._priority=-6
-    def ApplyTargetAblity(self,target,weather):
-        target.is_playing=False
-        #TODO change enemy's pokemon
 
 
 class Sing(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('Sing'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,0.1,StatusCondEnum.SLEEP)
+        self.CauseStatusCond(target,1,StatusCondEnum.SLEEP,is_print=True)
 
 
 class Supersonic(SkillBase):
@@ -320,16 +291,10 @@ class SonicBoom(SkillBase):
 #         SkillBase.__init__(self,SkillChart.GetSkillSeries('Disable'))
 
 
-class Acid(SkillBase):
+class Acid(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('acid'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('acid'),StageEnum.SPECIAL_DEFENSE,1,0.1,ObjOfAction.TAR+ObjOfAction.TAR_ABL)
 
-    def ApplyTargetAblity(self,target,weather):
-        if np.random.rand()<0.1:
-            if weather!=WeatherEnum.MIST:
-                target.Down(StageEnum.SPECIAL_DEFENSE,1)
-            else:
-                print('由于白雾效果，宝可梦的能力阶级不会下降')
             
 
 
@@ -391,26 +356,15 @@ class Psybeam(SkillBase):
         self.CauseSpecialCond(target,0.1,SpecialCondEnum.CONFUSION)
 
 
-class BubbleBeam(SkillBase):
+class BubbleBeam(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('bubblebeam'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if np.random.rand()<0.1:
-            if weather!=WeatherEnum.MIST:
-                target.Down(StageEnum.SPEED,1)
-            else:
-                print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('bubblebeam'),StageEnum.SPEED,1,1,ObjOfAction.TAR+ObjOfAction.TAR_ABL)
 
 
-class AuroraBeam(SkillBase):
+
+class AuroraBeam(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('aurorabeam'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if np.random.rand()<0.1:
-            if weather!=WeatherEnum.MIST:
-                target.Down(StageEnum.ATTACK,1)
-            else:
-                print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('aurorabeam'),StageEnum.ATTACK,1,0.1,ObjOfAction.TAR+ObjOfAction.TAR_ABL)
 
 
 class HyperBeam(SkillBase):
@@ -471,12 +425,12 @@ class MegaDrain(AbsorbSkill):
     def __init__(self):
         AbsorbSkill.__init__(self,SkillChart.GetSkillSeries('megadrain'))
 
-#TODO :寄生种子
+
 class LeechSeed(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('leechseed'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        target.special_cond.Set(SpecialCondEnum.PARASITIC,np.random.randint(3,9))
+        self.CauseSpecialCond(target,1,SpecialCondEnum.PARASITIC,4,is_print=True)
 
 
 class Growth(SkillBase):
@@ -524,14 +478,9 @@ class PetalDance(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('PetalDance'))
 
 
-class StringShot(SkillBase):
+class StringShot(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('stringshot'),ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if weather!=WeatherEnum.MIST:
-            target.Down(StageEnum.SPEED,2)
-        else:
-            print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('stringshot'),StageEnum.SPEED,2)
 
 
 class DragonRage(SkillBase):
@@ -564,7 +513,7 @@ class ThunderWave(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('thunderwave'),ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseStatusCond(target,1,StatusCondEnum.PARALYSIS)
+        self.CauseStatusCond(target,1,StatusCondEnum.PARALYSIS,is_print=True)
 
 class Thunder(SkillBase):
     def __init__(self):
@@ -628,15 +577,9 @@ class Confusion(SkillBase):
         self.CauseSpecialCond(target,0.1,SpecialCondEnum.CONFUSION)
 
 
-class Psychic(SkillBase):
+class Psychic(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('psychic'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if np.random.rand()<0.1:
-            if weather!=WeatherEnum.MIST:
-                target.Down(StageEnum.SPECIAL_DEFENSE,1)
-            else:
-                print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('psychic'),StageEnum.SPECIAL_DEFENSE,1,0.1,ObjOfAction.TAR+ObjOfAction.TAR_ABL)
 
 class Hypnosis(SkillBase):
     def __init__(self):
@@ -646,26 +589,21 @@ class Hypnosis(SkillBase):
 
 
 
-class Meditate(SkillBase):
+class Meditate(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('meditate'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.ATTACK,1)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('meditate'),StageEnum.ATTACK,1)
 
 
-class Agility(SkillBase):
+class Agility(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('agility'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.SPEED,2)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('agility'),StageEnum.SPEED,2)
 
-#TODO :add priority and speed check in fight
+
 class QuickAttack(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('quickattack'))
-        self._priotity=1
+        self._priority=1
 
-#TODO :when src has been attacked ,then the attack of src raise up
 class Rage(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('rage'),ObjOfAction.SRC_ABL+ObjOfAction.TAR)
@@ -694,20 +632,13 @@ class NightShade(SkillBase):
     
         
 
-class Screech(SkillBase):
+class Screech(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('Screech'),ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if weather!=WeatherEnum.MIST:
-            target.Down(StageEnum.SPECIAL_DEFENSE,2)
-        else:
-            print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('Screech'),StageEnum.SPECIAL_DEFENSE,2)
 
-class DoubleTeam(SkillBase):
+class DoubleTeam(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('doubleteam'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.DODGE,1)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('doubleteam'),StageEnum.DODGE,1)
 
 class Recover(SkillBase):
     def __init__(self):
@@ -716,27 +647,19 @@ class Recover(SkillBase):
         print(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
 
 
-class Harden(SkillBase):
+class Harden(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('harden'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.DEFENSE,1)
-
-class Minimize(SkillBase):
-    def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('minimize'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.DODGE,1)   
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('harden'),StageEnum.DEFENSE,1)
 
 
-class Smokescreen(SkillBase):
+class Minimize(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('smokescreen'),ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if weather!=WeatherEnum.MIST:
-            target.Down(StageEnum.HIT,1)
-        else:
-            print('由于白雾效果，宝可梦的能力阶级不会下降')
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('minimize'),StageEnum.DODGE,1)   
+
+
+class Smokescreen(TargetBuffDown):
+    def __init__(self):
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('smokescreen'),StageEnum.HIT,1)
 
 
 class ConfuseRay(SkillBase):
@@ -745,23 +668,18 @@ class ConfuseRay(SkillBase):
     def ApplyTargetAblity(self,target,weather):
         self.CauseSpecialCond(target,1,SpecialCondEnum.CONFUSION,is_print=True)
 
-class Withdraw(SkillBase):
+class Withdraw(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('withdraw'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.DEFENSE,1)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('withdraw'),StageEnum.DEFENSE,1)
 
-class DefenseCurl(SkillBase):
+class DefenseCurl(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('DefenseCurl'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.DEFENSE,1)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('DefenseCurl'),StageEnum.DEFENSE,1)
 
-class Barrier(SkillBase):
+class Barrier(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('Barrier'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.DEFENSE,2)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('Barrier'),StageEnum.DEFENSE,2)
+
 
 class LightScreen(SkillBase):
     def __init__(self):
@@ -787,40 +705,36 @@ class Reflect(SkillBase):
         self.CauseSpecialCond(src,1,SpecialCondEnum.REFLECT,5,is_print=True)
 
 
-class FocusEnergy(SkillBase):
+class FocusEnergy(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('focusenergy'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.CRITICAL_HITS,2)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('focusenergy'),StageEnum.CRITICAL_HITS,2)
 
 class Bide(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('bide'),ObjOfAction.TAR+ObjOfAction.SRC_ABL)
-        self._priotity=1
+        self._priority=1
     def SetDefault(self):
         self._is_ready=False
-        self._suffer_damage=0
         self._round_num=0
         self._damage=0
+
+
     def PreApply(self,src,target,weather):
         if self._is_ready==False:
-            
-            if self._round_num==0:
-                self._suffer_damage=0
-            else:
-                self._suffer_damage=self._hp-src.hp
             self._round_num=self._round_num+1
-            self._hp=src.hp
-            
-            self._damage=self._damage+self._suffer_damage
+            if self._round_num==1:
+                self._damage=0
+            else:
+                self._damage=self._damage+src.last_round.suffer_damage
             if self._round_num==3:
                 self._is_ready=True
+                self.pp=self.pp-1
                 print(src.GetName()+'爆发了！')
                 return True
             else:
                 print(src.GetName()+'忍耐中...')
             return False
-        self.pp=self.pp-1
+        
         return True
     def ApplyTarget(self,src,target,weather):
         return self._damage*2
@@ -908,7 +822,7 @@ class Clamp(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('clamp'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
     def ApplyTargetAblity(self,target,weather):
-        self.CauseSpecialCond(target,1,SpecialCondEnum.BOUND,is_print=True)
+        self.CauseSpecialCond(target,1,SpecialCondEnum.BOUND)
 
 
 class Swift(SkillBase):
@@ -928,31 +842,20 @@ class SpikeCannon(MultiHitSkill):
         MultiHitSkill.__init__(self,SkillChart.GetSkillSeries('spikecannon'))
 
 
-class Constrict(SkillBase):
+class Constrict(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('constrict'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if weather!=WeatherEnum.MIST:
-            target.Down(StageEnum.SPEED,1)
-        else:
-            print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('constrict'),StageEnum.SPEED,1,0.1,ObjOfAction.TAR+ObjOfAction.TAR_ABL)
 
 
-class Amnesia(SkillBase):
+class Amnesia(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('Amnesia'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.SPECIAL_DEFENSE,2)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('Amnesia'),StageEnum.SPECIAL_DEFENSE,2)
 
 
-class Kinesis(SkillBase):
+class Kinesis(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('kinesis'),ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if weather!=WeatherEnum.MIST:
-            target.Down(StageEnum.HIT,1)
-        else:
-            print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('kinesis'),StageEnum.HIT,1)
+
 
 
 
@@ -1028,15 +931,9 @@ class SkyAttack(StockpileSkill,EasyCriticalHitSkill):
 #         SkillBase.__init__(self,SkillChart.GetSkillSeries('transform'))
 
 
-class Bubble(SkillBase):
+class Bubble(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('bubble'),ObjOfAction.TAR+ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if np.random.rand()<0.1:
-            if weather!=WeatherEnum.MIST:
-                target.Down(StageEnum.SPEED,1)
-            else:
-                print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('bubble'),StageEnum.SPEED,1,0.1,ObjOfAction.TAR+ObjOfAction.TAR_ABL)
 
 
 class DizzyPunch(SkillBase):
@@ -1054,14 +951,9 @@ class Spore(SkillBase):
         self.CauseStatusCond(target,1,StatusCondEnum.SLEEP,is_print=True)
 
 
-class Flash(SkillBase):
+class Flash(TargetBuffDown):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('flash'),ObjOfAction.TAR_ABL)
-    def ApplyTargetAblity(self,target,weather):
-        if weather!=WeatherEnum.MIST:
-            target.Down(StageEnum.HIT,1)
-        else:
-            print('由于白雾效果，宝可梦的能力阶级不会下降')
+        TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('flash'),StageEnum.HIT,1)
 
 
 class Psywave(SkillBase):
@@ -1078,11 +970,11 @@ class Splash(SkillBase):
         return 0
 
 
-class AcidArmor(SkillBase):
+class AcidArmor(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('acidarmor'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.DEFENSE,2)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('acidarmor'),StageEnum.DEFENSE,2)
+
+
 
 
 class Crabhammer(EasyCriticalHitSkill):
@@ -1131,11 +1023,9 @@ class HyperFang(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('hyperfang'))
 
 
-class Sharpen(SkillBase):
+class Sharpen(SrcBuffUp):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('sharpen'),ObjOfAction.SRC_ABL)
-    def ApplySrcAblity(self,src):
-        src.Up(StageEnum.ATTACK,1)
+        SrcBuffUp.__init__(self,SkillChart.GetSkillSeries('sharpen'),SrcBuffUp)
 
 
 class Conversion(SkillBase):

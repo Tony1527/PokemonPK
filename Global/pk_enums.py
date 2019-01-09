@@ -169,7 +169,7 @@ class SpecialCondEnum(ConditionEnum):
         elif value==SpecialCondEnum.STIFF:
             return '僵硬'
         elif value==SpecialCondEnum.PARASITIC:
-            return '寄生'
+            return '被寄生'
         elif value==SpecialCondEnum.LIGHT_SCREEN:
             return '被光墙包围'
         elif value==SpecialCondEnum.REFLECT:
@@ -186,7 +186,7 @@ class SpecialCondEnum(ConditionEnum):
         elif value==SpecialCondEnum.STIFF:
             return '处于僵硬状态，无法行动'
         elif value==SpecialCondEnum.PARASITIC:
-            return '被寄生种子寄生'
+            return '被寄生种子寄生了'
         elif value==SpecialCondEnum.LIGHT_SCREEN:
             return '被光墙包围，特殊攻击伤害减弱'
         elif value==SpecialCondEnum.REFLECT:
@@ -195,7 +195,7 @@ class SpecialCondEnum(ConditionEnum):
     @classmethod
     def BackToNormal(cls,value):
         if value == SpecialCondEnum.CONFUSION:
-            return '混乱解除了'
+            return '从混乱中解除了'
         elif value==SpecialCondEnum.BOUND:
             return '从束缚中挣脱了'
         elif value==SpecialCondEnum.FORCED:
@@ -203,7 +203,7 @@ class SpecialCondEnum(ConditionEnum):
         elif value==SpecialCondEnum.STIFF:
             return '身体的僵硬感解除了'
         elif value==SpecialCondEnum.PARASITIC:
-            return '寄生种子消失了'
+            return '身上的寄生种子消失了'
         elif value==SpecialCondEnum.LIGHT_SCREEN:
             return '光墙消失了'
         elif value==SpecialCondEnum.REFLECT:

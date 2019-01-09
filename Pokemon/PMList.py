@@ -1,5 +1,6 @@
 from pk_utility import *
 from AllPokemons import *
+from AllSkills import *
 
 class PMList(object):
     def __init__(self):
@@ -18,8 +19,15 @@ class PMList(object):
     def FirstAlive(self):
         if len(self._pm_list)>=1:
             for pm in self._pm_list:
-                if pm.hp>0:
+                if pm.IsAlive():
                     return pm
+        return None
+
+    def LastAlive(self):
+        if len(self._pm_list)>=1:
+            for i in range(len(self._pm_list)-1,-1,-1):
+                if self._pm_list[i].IsAlive():
+                    return self._pm_list[i]
         return None
 
     def Front(self):
@@ -66,6 +74,7 @@ class PMList(object):
         
 
     def Swap(self,a,b):
+        self._pm_list[a].special_cond.Clear()
         self._pm_list[b],self._pm_list[a]=self._pm_list[a],self._pm_list[b]
 
 
