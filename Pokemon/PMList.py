@@ -51,11 +51,11 @@ class PMList(object):
             if pokemon==None:
                 return False
             if pokemon.hp==0:
-                print(pokemon.GetName()+'已经处于濒死状态，无法上场战斗')
+                Console.msg(pokemon.GetName()+'已经处于濒死状态，无法上场战斗')
                 continue
             idx=self._GetIdxOfPM(pokemon)
             if idx==0:
-                print('所选的宝可梦已经在场上,请重新选择')
+                Console.msg('所选的宝可梦已经在场上,请重新选择')
             else:
                 self.player.Speak('下来吧'+self._pm_list[0].GetName())
                 self.Swap(0,idx)
@@ -91,8 +91,7 @@ class PMList(object):
 
     
 def SkillChoose(pokemon):
-    print('===============')
-    print('选择招式')
+    Console.msg('选择招式')
     while True:
         pokemon.PrintSkills()
         choice=input('请选择你要使用的技能(输入0返回)：')
@@ -111,6 +110,6 @@ def SkillChoose(pokemon):
                 if struggle_flag:
                     return Struggle()
                 else:
-                    print('该招式已经用完，请选择其他技能')
+                    Console.msg('该招式已经用完，请选择其他技能')
         else:
             pass

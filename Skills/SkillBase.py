@@ -74,40 +74,40 @@ class SkillBase(Singleton):
         #     raise ValueError('src or target must be derived from SkillBase')
         target_damage=0
         if is_print:
-            print('{}使用{}'.format(src.GetName(),self._name))
+            Console.msg('{}使用{}'.format(src.GetName(),self._name))
         if not self.PreApply(src,target,weather):
-            rest()
+            # rest()
             if is_print:
-                print('==============')
+                Console.msg('==============')
             return target_damage
         
         if self.IsHit(src,target,weather):
             
             if src.IsAlive() and self._obj_of_action & ObjOfAction.SRC_ABL:
                 self.ApplySrcAblity(src)
-                rest()
+                # rest()
             if target.IsAlive() and self._obj_of_action & ObjOfAction.TAR:
                 target_damage = int(self.ApplyTarget(src,target,weather))
                 ApplyDamage(target,target_damage)
-                rest()
+                # rest()
             if src.IsAlive() and self._obj_of_action &ObjOfAction.SRC:
                 src_damage = int(self.ApplySrc(src,target_damage))
                 ApplyDamage(src,src_damage)
-                rest()
+                # rest()
             if target.IsAlive() and self._obj_of_action &ObjOfAction.TAR_ABL:
                 self.ApplyTargetAblity(target,weather)
-                rest()
+                # rest()
             if  self._obj_of_action &ObjOfAction.WEATHER:
                 self.ApplyWeather(weather)
-                rest()
+                # rest()
         else:
             if is_print:
-                print('{}躲开了'.format(target.GetName()))
+                Console.msg('{}躲开了'.format(target.GetName()))
             self.SideEffect(src,target)
-            rest()
+            # rest()
         self.PostApply(src,target,weather)
         if is_print:
-            print('==============')
+            Console.msg('==============')
         return target_damage
 
     def IsHit(self,src,target,weather):
@@ -160,10 +160,10 @@ class SkillBase(Singleton):
         
 
         if is_critical_hit and not effect_str==u'似乎没有效果' and is_print:
-            print('命中要害')
+            Console.msg('命中要害')
         
         if effect_str!='' and is_print:
-            print('{}'.format(effect_str))
+            Console.msg('{}'.format(effect_str))
 
         
         return damage
@@ -195,10 +195,10 @@ class SkillBase(Singleton):
                 if round==0:
                     round=np.random.randint(2,5)
                 target.special_cond.Set(special_cond_enum,round)
-                print(target.GetName()+SpecialCondEnum.ToChinese(special_cond_enum)+"了")
+                Console.msg(target.GetName()+SpecialCondEnum.ToChinese(special_cond_enum)+"了")
             else:
                 if is_print:
-                    print(target.GetName()+'已经'+SpecialCondEnum.ToChinese(special_cond_enum)+"了")
+                    Console.msg(target.GetName()+'已经'+SpecialCondEnum.ToChinese(special_cond_enum)+"了")
             
                 
     @classmethod
@@ -208,10 +208,10 @@ class SkillBase(Singleton):
                 if round==0:
                     round=np.random.randint(1,4)
                 target.status_cond.Set(status_cond_enum,round)
-                print(target.GetName()+str(target.status_cond)+"了")
+                Console.msg(target.GetName()+str(target.status_cond)+"了")
             else:
                 if is_print:
-                    print('似乎没有什么效果')
+                    Console.msg('似乎没有什么效果')
                 else:
                     pass
     
@@ -257,7 +257,6 @@ class SkillChart(Singleton):
     @classmethod
     def GetSkillSeries(cls,skill_name):
         skill_name = skill_name.lstrip().rstrip().lower()
-        # print(skill_name)
         instance = SkillChart.GetInstance()
         return instance._skill_chart.ix[skill_name]
 
@@ -266,8 +265,6 @@ class SkillChart(Singleton):
         SkillChart.GetInstance()
 
 class SkillFactory:
-    def __init__(self):
-        print('in skill_factory.')
 
     @classmethod
     def GetInstance(cls,class_obj,*args,**kwargs):

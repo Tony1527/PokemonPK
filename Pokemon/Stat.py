@@ -16,7 +16,6 @@ class Stat(object):
         data = pd.read_csv(file_stats)
         file_stats.close()
         data.index=data['Stat'].values
-        print(data)
         self.hp = data.loc['HP']['Value']
         self.attack = data.loc['Attack']['Value']
         self.defense = data.loc['Defense']['Value']

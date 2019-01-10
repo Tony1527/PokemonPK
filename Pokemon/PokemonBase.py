@@ -1,6 +1,7 @@
 import numpy as np
 from pk_utility import *
 from Stat import *
+from Console import *
 class PokemonBase(object):
     def __init__(self,stat,indiv_values,type=TypeEnum.NORMAL,name='???',level=1):
         self.level=level
@@ -93,10 +94,10 @@ class PokemonBase(object):
                 self.hp=(self._hp-origin_HP)+self.hp
 
     def Down(self,stage_enum,num):
-        print(self._name+'的'+self.stage.Down(stage_enum,num))
+        Console.msg(self._name+'的'+self.stage.Down(stage_enum,num))
 
     def Up(self,stage_enum,num):
-        print(self._name+'的'+self.stage.Up(stage_enum,num))
+        Console.msg(self._name+'的'+self.stage.Up(stage_enum,num))
 
     #学习技能
     def LearnSkills(self,skills=[],auto_learn=False,auto_lu_num=2,auto_tm_num=2):
@@ -106,7 +107,7 @@ class PokemonBase(object):
         if not auto_learn:
             for skill in skills:
                 skill_name = skill.GetName()
-                print('you have learned',skill_name)
+                Console.msg('你学习了'+skill_name+'!')
 
                 #如果技能数小于4，直接学会技能，否则需要进行学习判断
                 if len(self.skills)<4:
@@ -114,15 +115,15 @@ class PokemonBase(object):
                 else:
                     is_finished=False
                     while not is_finished:
-                        print('your skills are full. If you want to learn more skills, please forget one skill first.')
+                        Console.msg('你的技能已满，如果要学习其他技能，请选择想要忘记的技能')
                         self.skills.append(skill)
                         self.PrintSkills()
-                        choose = input('your choice:')
+                        choose = input('你的选择是:')
                         choose_idx = g_d5i[choose]
-                        if ToBeSure('forget '+self.skills[choose_idx]):
-                            print('You have forgotten',self.skills[choose_idx].GetName())
+                        if ToBeSure('忘记 '+self.skills[choose_idx]):
+                            Console.msg('你选择忘记了'+self.skills[choose_idx].GetName())
                             if choose_idx<=3:
-                                print('And learned',skill_name)
+                                Console.msg(self.GetName()+'学会了'+skill_name)
                                 self.skills[choose_idx]=skill
                             
                             self.skills.pop()

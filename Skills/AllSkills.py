@@ -143,7 +143,7 @@ class JumpKick(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('jumpkick'))
     def SideEffect(self,src,target):
-        print(src.GetName()+'受到副作用')
+        Console.msg(src.GetName()+'受到副作用')
         target_damage = self.ApplyTarget(src,target,None)
         ApplyDamage(src,target_damage//8)
 
@@ -318,9 +318,9 @@ class Mist(SkillBase):
     def ApplyWeather(self,weather):
         if weather!=WeatherEnum.MIST:
             weather.Set(WeatherEnum.MIST,5)
-            print('场地四周升起了白雾')
+            Console.msg('场地四周升起了白雾')
         else:
-            print('似乎没有什么效果')
+            Console.msg('似乎没有什么效果')
 class WaterGun(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('watergun'))
@@ -644,7 +644,7 @@ class Recover(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('recover'),ObjOfAction.SRC_ABL)
     def ApplySrcAblity(self,src):
-        print(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
+        Console.msg(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
 
 
 class Harden(SrcBuffUp):
@@ -696,7 +696,7 @@ class Haze(SkillBase):
     def ApplyTargetAblity(self,target,weather):
         target.ResetStage()
     def PostApply(self,src,target,weather):
-        print('场上宝可梦的能力阶级已经重置！')
+        Console.msg('场上宝可梦的能力阶级已经重置！')
 
 class Reflect(SkillBase):
     def __init__(self):
@@ -729,10 +729,10 @@ class Bide(SkillBase):
             if self._round_num==3:
                 self._is_ready=True
                 self.pp=self.pp-1
-                print(src.GetName()+'爆发了！')
+                Console.msg(src.GetName()+'爆发了！')
                 return True
             else:
-                print(src.GetName()+'忍耐中...')
+                Console.msg(src.GetName()+'忍耐中...')
             return False
         
         return True
@@ -756,7 +756,7 @@ class Metronome(SkillBase):
         
         while(name=='鹦鹉学舌' or name=='挥指'):
             name=series[np.random.randint(len(series))]
-        print('{}使用{}，挥出了{}'.format(src.GetName(),self._name,name))
+        Console.msg('{}使用{}，挥出了{}'.format(src.GetName(),self._name,name))
         return GetObjByChineseName(name).Apply(src,target,weather)
 
 class MirrorMove(SkillBase):
@@ -765,8 +765,8 @@ class MirrorMove(SkillBase):
     def Apply(self,src=None,target=None,weather=None):
         name=target.last_round.src_skill.GetName()
         if name=='双倍奉还' or name=='挣扎' or name=='鹦鹉学舌' or name=='':
-            print(src.GetName()+'使用鹦鹉学舌失败')
-            print('==============')
+            Console.msg(src.GetName()+'使用鹦鹉学舌失败')
+            Console.msg('==============')
             return 0
         else:
             return GetObjByChineseName(name).Apply(src,target,weather)
@@ -863,7 +863,7 @@ class SoftBoiled(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('softboiled'),ObjOfAction.SRC_ABL)
     def ApplySrcAblity(self,src):
-        print(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
+        Console.msg(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
     
 
 
@@ -871,7 +871,7 @@ class HighJumpKick(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('highjumpkick'))
     def SideEffect(self,src,target):
-        print(src.GetName()+'受到副作用')
+        Console.msg(src.GetName()+'受到副作用')
         target_damage = self.ApplyTarget(src,target,None)
         ApplyDamage(src,target_damage//8)
 
@@ -891,7 +891,7 @@ class DreamEater(AbsorbSkill):
         if target.status_cond.Get() == StatusCondEnum.SLEEP:
             return True
         else:
-            print('似乎没有什么效果')
+            Console.msg('似乎没有什么效果')
             return False
         
 
@@ -1001,15 +1001,15 @@ class Rest(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('rest'),ObjOfAction.SRC_ABL)
     def PreApply(self,src,target,weather):
         if src.status_cond.Get()==StatusCondEnum.SLEEP or src.hp==src.HP():
-            print('似乎没有什么效果')
+            Console.msg('似乎没有什么效果')
             return False
         else:
             self.pp=self.pp-1
             return True
     def ApplySrcAblity(self,src):
-        print(src.GetName()+'回复了'+RecoverAllHP(src)+'点HP')
+        Console.msg(src.GetName()+'回复了'+RecoverAllHP(src)+'点HP')
         if RecoverStatusCond(src):
-            print(src.GetName()+'解除了所有异常状态')
+            Console.msg(src.GetName()+'解除了所有异常状态')
         self.CauseStatusCond(src,1,StatusCondEnum.SLEEP,2)
 
 
@@ -1034,7 +1034,7 @@ class Conversion(SkillBase):
     def ApplySrcAblity(self,src):
         if len(src.GetSkills())!=0:
             src.type=src.GetSkills()[0].GetType()
-            print(src.GetName()+'战斗中属性变成了'+TypeEnum.ToChinese(src.type))
+            Console.msg(src.GetName()+'战斗中属性变成了'+TypeEnum.ToChinese(src.type))
 
 class TriAttack(SkillBase):
     def __init__(self):

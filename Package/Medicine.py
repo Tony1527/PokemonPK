@@ -22,15 +22,14 @@ class FullRestore(Medicine):
         self._name='痊愈药'
     def UseImplement(self,pokemon):
         if pokemon.IsAlive()==False:
-            print('使用痊愈药无效')
+            Console.msg('使用痊愈药无效')
             return False
         recover_value,retstat = RecoverAll(pokemon)
         if recover_value==0 and retstat==False:
-            print('使用痊愈药无效')
+            Console.msg('使用痊愈药无效')
             return False
         else:
-            #TODO :add name
-            print(pokemon.GetName()+'回复了全部HP且解除了所有异常状态')
+            Console.msg(pokemon.GetName()+'回复了全部HP且解除了所有异常状态')
             self.num=self.num-1
             return True
     def __str__(self):
@@ -43,14 +42,14 @@ class FullHeal(Medicine):
         
     def UseImplement(self,pokemon):
         if pokemon.IsAlive()==False:
-            print('使用万灵药无效')
+            Console.msg('使用万灵药无效')
             return False
         retstat = RecoverStatusCond(pokemon)
         if retstat==False:
-            print('使用万灵药无效')
+            Console.msg('使用万灵药无效')
             return False
         else:
-            print(pokemon.GetName()+'异常状态解除了')
+            Console.msg(pokemon.GetName()+'异常状态解除了')
             self.num=self.num-1
             return True
     def __str__(self):
@@ -62,14 +61,14 @@ class MaxPotion(Medicine):
         
     def UseImplement(self,pokemon):
         if pokemon.IsAlive()==False:
-            print('使用全满药无效')
+            Console.msg('使用全满药无效')
             return False
         recover_value = RecoverAllHP(pokemon)
         if recover_value==0 :
-            print('使用全满药无效')
+            Console.msg('使用全满药无效')
             return False
         else:
-            print(pokemon.GetName()+'回复了全部HP')
+            Console.msg(pokemon.GetName()+'回复了全部HP')
             self.num=self.num-1
             return True
     def __str__(self):
@@ -83,11 +82,11 @@ class Revive(Medicine):
         
     def UseImplement(self,pokemon):
         if pokemon.IsAlive():
-            print('使用活力碎片无效')
+            Console.msg('使用活力碎片无效')
             return False
         else:
             recover_value = RecoverHP(pokemon,pokemon.HP()*0.5)
-            print(pokemon.GetName()+'从濒死状态复苏了')
+            Console.msg(pokemon.GetName()+'从濒死状态复苏了')
             self.num=self.num-1
             return True
     def __str__(self):
@@ -101,11 +100,11 @@ class MaxRevive(Medicine):
         
     def UseImplement(self,pokemon):
         if pokemon.IsAlive():
-            print('使用活力块无效')
+            Console.msg('使用活力块无效')
             return False
         else:
             recover_value = RecoverAllHP(pokemon)
-            print(pokemon.GetName()+'从濒死状态复苏了')
+            Console.msg(pokemon.GetName()+'从濒死状态复苏了')
             self.num=self.num-1
             return True
     def __str__(self):

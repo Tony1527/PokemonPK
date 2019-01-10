@@ -87,8 +87,7 @@ class TypeChart(Singleton):
                defense_index=1<<j
                if not (defense_index & defense_type):
                    continue
-               effect = effect * instance._type_chart[defense_index][attack_index]   
-               # print(effect,attack_index,defense_index)    
+               effect = effect * instance._type_chart[defense_index][attack_index]     
        
 
        effect_str = ''
@@ -105,12 +104,13 @@ class PokemonPKError(Exception):
     pass
         
         
-def GetObjByChineseName(chinese_name):
-    return g_globals[g_c2e[chinese_name]]()
+def GetObjByChineseName(chinese_name,*args):
+    return g_globals[g_c2e[chinese_name]](*args)
         
     
-def rest():
-    time.sleep(0.1) 
+def rest(sleep_time=0.5):
+    time.sleep(sleep_time) 
+
 
 
 

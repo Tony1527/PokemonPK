@@ -25,9 +25,9 @@ class MultiHitSkill(SkillBase):
             elif 6/6>hit_chance and hit_chance>=4/6:
                 round_num=2
         for i in range(round_num):
-            print('击中'+str(i+1)+'次')
+            Console.msg('击中'+str(i+1)+'次')
             damage = damage + self.DamageCal(src,target,weather)
-            rest()
+            rest(0.2)
         return damage
 
 class MustKillSkill(SkillBase):
@@ -35,7 +35,7 @@ class MustKillSkill(SkillBase):
         SkillBase.__init__(self,skill_series,obj_of_action,info)
     def ApplyTarget(self,src,target,weather):
         damage=target.hp
-        print('一击必杀')
+        Console.msg('一击必杀！')
         return damage
     def IsHit(self,src,target,weather):
         if src.level<target.level:
@@ -48,7 +48,7 @@ class ReboundSkill(SkillBase):
         SkillBase.__init__(self,skill_series,obj_of_action,info)
         self.percent=percent
     def ApplySrc(self,src,target_damage):
-        print(src.GetName()+'受到反弹伤害')
+        Console.msg(src.GetName()+'受到反弹伤害')
         return int(target_damage*self.percent)
 
 
@@ -57,7 +57,7 @@ class SelfLossSkill(SkillBase):
         SkillBase.__init__(self,skill_series,obj_of_action,info)
         self.percent=percent
     def ApplySrc(self,src,target_damage):
-        print(src.GetName()+'受到自损伤害')
+        Console.msg(src.GetName()+'受到自损伤害')
         return int(src.HP()*self.percent)
 
 class StockpileSkill(SkillBase):
@@ -70,7 +70,7 @@ class StockpileSkill(SkillBase):
         self._is_ready=False
     def PreApply(self,src,target,weather):
         if self._is_ready==False:
-            print(src.GetName()+self._discription+'...')
+            Console.msg(src.GetName()+self._discription+'...')
             self._is_ready=True
             src.position=self._position
             src.special_cond.Set(SpecialCondEnum.FORCED,2)
@@ -89,7 +89,7 @@ class AbsorbSkill(SkillBase):
         self.percent=percent
     def ApplySrc(self,src,target_damage):
         absorb_value=int(target_damage*self.percent)
-        print(src.GetName()+'吸收了'+str(absorb_value)+'点生命')
+        Console.msg(src.GetName()+'吸收了'+str(absorb_value)+'点生命')
         return -1
 
 class EasyCriticalHitSkill(SkillBase):
@@ -117,4 +117,4 @@ class TargetBuffDown(SkillBase):
             if weather!=WeatherEnum.MIST:
                 target.Down(self.stage_enum,self.value)
             else:
-                print('由于白雾效果，宝可梦的能力阶级不会下降')
+                Console.msg('由于白雾效果，宝可梦的能力阶级不会下降')

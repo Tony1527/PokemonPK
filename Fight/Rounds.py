@@ -6,6 +6,7 @@ from AllSkills import *
 from Weather import *
 from ManipulatePM import *
 from PMList import *
+from Console import *
 
 class Rounds(object):
 
@@ -23,6 +24,7 @@ class Rounds(object):
         '''
             回合制战斗
         '''
+        Console.start_game(self.our_tm,self.enemy_tm)
         while True:
             #检查结束
             if self._CheckTeam():
@@ -33,7 +35,7 @@ class Rounds(object):
             self._Fight()
 
             self._End()
-            rest()
+            # rest()
             
 
             
@@ -41,7 +43,7 @@ class Rounds(object):
     
     def _Start(self):
         if self.first:
-            print('开战了！')
+            Console.msg('开战了！')
             self._Admission(self.our_tm) #self.our_pm=
             self._Admission(self.enemy_tm) #self.enemy_pm=
             self.first=False
@@ -76,9 +78,9 @@ class Rounds(object):
             self.our_skill=our_pm.last_round.src_skill
         else:
             while(True):
-                print('[1] 战斗')
-                print('[2] 背包')
-                print('[3] 精灵')
+                Console.msg('[1] 战斗')
+                Console.msg('[2] 背包')
+                Console.msg('[3] 精灵')
                 choice=input('请选择你要进行的操作：')
                 choice=a2i(choice,1,3)
                 if choice<3 and choice>=0:
@@ -92,7 +94,7 @@ class Rounds(object):
                             break
                     elif choice == 2:
                         if our_pm.special_cond.Check(SpecialCondEnum.BOUND):
-                            print(our_pm.GetName()+'被束缚，无法下场')
+                            Console.msg(our_pm.GetName()+'被束缚，无法下场')
                             continue
                         if self.our_tm.pm_list.SwitchPM():
                             self._Admission(self.our_tm)
@@ -102,14 +104,14 @@ class Rounds(object):
         
         #敌方选择
         self._EnemyScriptChoose()
-        print(self.our_skill)
-        print(self.enemy_skill)
+        # Console.msg(self.our_skill)
+        # Console.msg(self.enemy_skill)
 
     def _Admission(self,team):
         '''
             宝可梦入场
         '''
-        rest()
+        # rest()
         pokemon=team.pm_list.FirstAlive()
         if pokemon!=None:
             team.player.Speak('就决定是你了(゜-゜)つロ—    '+pokemon.GetName()+'!')
@@ -175,23 +177,23 @@ class Rounds(object):
     def _NegativeEffect(self,pm,opposite_pm):
 
         if pm.status_cond.Check(StatusCondEnum.POISON):
-            print(pm.GetName()+pm.status_cond.Discription())
+            Console.msg(pm.GetName()+pm.status_cond.Discription())
             ApplyDamage(pm,pm.HP()*1/8)
         elif pm.status_cond.Check(StatusCondEnum.BADLYPOISON):
-            print(pm.GetName()+pm.status_cond.Discription())
+            Console.msg(pm.GetName()+pm.status_cond.Discription())
             time=pm.status_cond.LastTime()+1
             if time>15:
                 time=15
             ApplyDamage(pm,pm.HP()*time/16)
         elif pm.status_cond.Check(StatusCondEnum.BURN):
-            print(pm.GetName()+pm.status_cond.Discription())
+            Console.msg(pm.GetName()+pm.status_cond.Discription())
             ApplyDamage(pm,pm.HP()*1/16)
 
         if pm.special_cond.Check(SpecialCondEnum.PARASITIC):
-            print(pm.GetName()+SpecialCondEnum.Discription(SpecialCondEnum.PARASITIC))
+            Console.msg(pm.GetName()+SpecialCondEnum.Discription(SpecialCondEnum.PARASITIC))
             ApplyDamage(pm,pm.HP()*1/16)
             if opposite_pm.IsAlive():
-                print(opposite_pm.GetName()+'吸收了力量，回复了'+RecoverHP(opposite_pm,pm.HP()*1/16)+'点HP')
+                Console.msg(opposite_pm.GetName()+'吸收了力量，回复了'+RecoverHP(opposite_pm,pm.HP()*1/16)+'点HP')
 
 
         
@@ -207,50 +209,35 @@ class Rounds(object):
         #状态数减1
         self._ReduceCondRound(our_pm)
         self._ReduceCondRound(enemy_pm)
-        # if our_pm.IsAlive():
-        #     retval=our_pm.status_cond.Reduce()
-        #     if retval!='':
-        #         print(our_pm.GetName()+retval)
-
-        #     retval=our_pm.special_cond.Reduce()
-        #     if retval!='':
-        #         print(our_pm.GetName()+retval)
-        # if enemy_pm.IsAlive():
-        #     retval=enemy_pm.status_cond.Reduce()
-        #     if retval!='':
-        #         print(enemy_pm.GetName()+retval)
-
-        #     retval=enemy_pm.special_cond.Reduce()
-        #     if retval!='':
-        #         print(enemy_pm.GetName()+retval)
+        
         if self.weather!=None:
             last_weather=self.weather.Get()
             self.weather.Reduce()
             if self.weather!=last_weather:
-                print(self.weather.Discription())
+                Console.msg(self.weather.Discription())
             else:
                 if self.weather.IsNormal():
                     pass
                 else:
-                    print(self.weather.Discription())
+                    Console.msg(self.weather.Discription())
 
         
     def _ReduceCondRound(self,pm):
         if pm.IsAlive():
             retval=pm.status_cond.Reduce()
             if retval!='':
-                print(pm.GetName()+retval)
+                Console.msg(pm.GetName()+retval)
 
             is_forced_before=pm.special_cond.Check(SpecialCondEnum.FORCED)
 
             retval=pm.special_cond.Reduce()
             if retval!='':
-                print(pm.GetName()+retval)
+                Console.msg(pm.GetName()+retval)
 
             is_forced_later=pm.special_cond.Check(SpecialCondEnum.FORCED)
 
             if is_forced_before and not is_forced_later and pm.last_round.src_skill !=None and pm.last_round.src_skill.GetName()=='大闹一番':
-                print(pm.GetName()+'闹得头晕目眩')
+                Console.msg(pm.GetName()+'闹得头晕目眩')
                 SkillBase.CauseSpecialCond(pm,1,SpecialCondEnum.CONFUSION)
 
                 
@@ -264,16 +251,16 @@ class Rounds(object):
             if pm.hp>0:
                 end=False
         if end==True:
-            print('***************')
-            print('你赢得了胜利！')
-            print('***************')
+            Console.msg('***************')
+            Console.msg('你赢得了胜利！')
+            Console.msg('***************')
             return True
         end=True
         for pm in self.our_tm.pm_list:
             if pm.hp>0:
                 end=False
         if end==True:
-            print('你输了...')
+            Console.msg('你输了...')
             return True
         return end
     def _CheckAndApplySkill(self,skill,src,target,weather,src_tm,target_tm):
@@ -286,23 +273,22 @@ class Rounds(object):
         if not StatusCondEnum.IsNormal(status):
             if status==StatusCondEnum.PARALYSIS:
                 if np.random.rand()<0.25:
-                    print(src.GetName()+src.status_cond.Discription())
+                    Console.msg(src.GetName()+src.status_cond.Discription())
                     apply_flag=False
             elif status==StatusCondEnum.SLEEP:
-                print(src.GetName()+src.status_cond.Discription())
+                Console.msg(src.GetName()+src.status_cond.Discription())
                 apply_flag=False
             elif status==StatusCondEnum.FREEZE:
-                print(src.GetName()+src.status_cond.Discription())
+                Console.msg(src.GetName()+src.status_cond.Discription())
                 apply_flag=False
         special_cond=src.special_cond
         if special_cond.Check(SpecialCondEnum.STIFF):
-            print(src.GetName()+SpecialCondEnum.Discription(SpecialCondEnum.STIFF))
+            Console.msg(src.GetName()+SpecialCondEnum.Discription(SpecialCondEnum.STIFF))
             apply_flag=False
         elif special_cond.Check(SpecialCondEnum.CONFUSION):
-            print(src.GetName()+'混乱了')
-            rest()
+            Console.msg(src.GetName()+'混乱了')
             if np.random.rand()<0.5:
-                print(src.GetName()+SpecialCondEnum.Discription(SpecialCondEnum.CONFUSION))
+                Console.msg(src.GetName()+SpecialCondEnum.Discription(SpecialCondEnum.CONFUSION))
                 damage=SelfHarm().Apply(src,src,weather,is_print=False)
                 apply_flag=False
         
@@ -311,14 +297,14 @@ class Rounds(object):
             damage=skill.Apply(src,target,weather)
         if target.IsAlive():
             if target.last_round.src_skill!=None and damage>0 and  target.last_round.src_skill.GetName()=='愤怒':
-                print(target.GetName()+'被激怒了')
-                print(target.GetName()+target.stage.Up(StageEnum.ATTACK,1))
+                Console.msg(target.GetName()+'被激怒了')
+                Console.msg(target.GetName()+target.stage.Up(StageEnum.ATTACK,1))
             target.last_round.target_skill=skill
             target.last_round.suffer_damage=damage
         if src.IsAlive():
             src.last_round.src_skill=skill
         if skill.GetName()=='吹飞' or skill.GetName()=='吼叫':
-            print(target.GetName()+'被强制下场')
+            Console.msg(target.GetName()+'被强制下场')
             target_tm.pm_list.Choose(target_tm.pm_list.LastAlive())
             self._Admission(target_tm)
         

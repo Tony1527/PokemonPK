@@ -7,8 +7,7 @@ class Package(Singleton):
         self.player=None
     
     def Open(self,pokemon_list):
-        print('===============')
-        print('打开背包')
+        Console.msg('打开背包')
         while True:
             self.print()
             choice=input('请选择你要使用的药剂(输入0返回)：')

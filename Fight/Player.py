@@ -1,4 +1,5 @@
 from pk_utility import *
+from Console import *
 
 class Player(object):
     def __init__(self,name):
@@ -6,7 +7,7 @@ class Player(object):
         self._fighting=[]
         self._defeating=[]
     def Speak(self,msg):
-        print(self._name+" : "+msg)
+        Console.msg(self._name+" : "+msg)
     def SetMockingSentences(self,fighting=[],defeating=[]):
         self._fighting=fighting
         self._defeating=defeating
