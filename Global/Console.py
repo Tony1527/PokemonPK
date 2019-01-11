@@ -24,6 +24,7 @@ class Console(Singleton):
             print('')
         our_pm=self.our_tm.pm_list.Front()
         enemy_pm=self.enemy_tm.pm_list.Front()
+        #TODO Add Pokemons alive print
         print('敌方宝可梦>'+enemy_pm.GetName()+"  level:"+str(enemy_pm.level))
         display_hp(enemy_pm)
         print('')

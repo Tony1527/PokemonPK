@@ -13,6 +13,9 @@ class PMList(object):
     def __iter__(self):
         return self._pm_list.__iter__()
     
+    def __getitem__(self,idx):
+        return self._pm_list[idx]
+    
     def SetPlayer(self,player):
         self.player=player
 

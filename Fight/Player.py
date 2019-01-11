@@ -12,8 +12,8 @@ class Player(object):
         self._fighting=fighting
         self._defeating=defeating
     def MockingOnFighting(self,percent=1):
-        if np.random.rand()<percent:
+        if len(self._fighting)>0 and np.random.rand()<percent:
             self.Speak(self._fighting[np.random.randint(len(self._fighting))])
     def MockingOnDefeating(self,percent=1):
-        if np.random.rand()<percent:
+        if len(self._defeating)>0 and np.random.rand()<percent:
             self.Speak(self._fighting[np.random.randint(len(self._fighting))])

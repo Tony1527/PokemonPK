@@ -29,9 +29,12 @@ class Rounds(object):
             #检查结束
             if self._CheckTeam():
                 break
+            # print('start')
             self._Start()
             
+            # print('choose')
             self._Choose()
+            # print('fight')
             self._Fight()
 
             self._End()
@@ -55,14 +58,17 @@ class Rounds(object):
                         self._Admission(self.our_tm)
                         break
 
+            #TODO: choose least effect
             if not self.enemy_tm.pm_list.Front().IsAlive():
                 for pm in self.enemy_tm.pm_list:
                     if pm.IsAlive() and TypeChart.TypeVSType(our_pm.type,pm.type)[0]<=2:
                         self.enemy_tm.pm_list.Choose(pm)
                         self._Admission(self.enemy_tm)
+                        break
                 if not self.enemy_tm.pm_list.Front().IsAlive():
                     self.enemy_tm.pm_list.Choose(self.enemy_tm.pm_list.FirstAlive())
                     self._Admission(self.enemy_tm)
+                #TODO :add change switchPM when enemy's pokemon is dead
 
     def _Choose(self):
         '''
@@ -104,8 +110,9 @@ class Rounds(object):
         
         #敌方选择
         self._EnemyScriptChoose()
-        # Console.msg(self.our_skill)
-        # Console.msg(self.enemy_skill)
+        # print('Skills')
+        # print(self.our_skill)
+        # print(self.enemy_skill)
 
     def _Admission(self,team):
         '''
@@ -152,20 +159,21 @@ class Rounds(object):
                     our_speed = our_pm.Speed()
                     enemy_speed = enemy_pm.Speed()
                     if our_speed*our_pm.stage.Get(StageEnum.SPEED) > enemy_speed*enemy_pm.stage.Get(StageEnum.SPEED):
-                        pass
+                        self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
+                        self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
                     elif our_speed*our_pm.stage.Get(StageEnum.SPEED) < enemy_speed*enemy_pm.stage.Get(StageEnum.SPEED):
                         self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
                         self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
                     else:
                         if our_speed > enemy_speed:
-                            self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
                             self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
+                            self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
                         elif our_speed < enemy_speed:
                             self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
                             self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
                         else:
-                            self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
                             self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
+                            self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
         our_pm = self.our_tm.pm_list.Front()
         enemy_pm=self.enemy_tm.pm_list.Front()
         #招式负面效果发动
