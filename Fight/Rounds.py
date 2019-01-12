@@ -52,23 +52,36 @@ class Rounds(object):
             self.first=False
         else:
             our_pm=self.our_tm.pm_list.FirstAlive()
+            is_enemy_admission=False
+            is_our_admission=False
             if not self.our_tm.pm_list.Front().IsAlive():
-                while(True):
-                    if self.our_tm.pm_list.SwitchPM():
-                        self._Admission(self.our_tm)
-                        break
+                is_our_admission=True
+                
 
-            #TODO: choose least effect
             if not self.enemy_tm.pm_list.Front().IsAlive():
                 for pm in self.enemy_tm.pm_list:
                     if pm.IsAlive() and TypeChart.TypeVSType(our_pm.type,pm.type)[0]<=2:
                         self.enemy_tm.pm_list.Choose(pm)
-                        self._Admission(self.enemy_tm)
+                        is_enemy_admission=True
                         break
+                #如果没有合适的属性的宝可梦，则让第一只活着的宝可梦上场
                 if not self.enemy_tm.pm_list.Front().IsAlive():
                     self.enemy_tm.pm_list.Choose(self.enemy_tm.pm_list.FirstAlive())
-                    self._Admission(self.enemy_tm)
-                #TODO :add change switchPM when enemy's pokemon is dead
+                    
+
+            if is_our_admission or is_enemy_admission:
+                while(True):
+                    if self.our_tm.pm_list.SwitchPM():  
+                        is_our_admission=True                      
+                        break
+                    if not is_our_admission:
+                        break
+
+            if is_our_admission:
+                self._Admission(self.our_tm)
+            if is_enemy_admission:
+                self._Admission(self.enemy_tm)
+            
 
     def _Choose(self):
         '''
@@ -84,6 +97,8 @@ class Rounds(object):
             self.our_skill=our_pm.last_round.src_skill
         else:
             while(True):
+                #TODO:有待商榷
+                Console.refresh(is_clean_total=True)
                 Console.msg('[1] 战斗')
                 Console.msg('[2] 背包')
                 Console.msg('[3] 精灵')

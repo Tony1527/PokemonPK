@@ -40,5 +40,6 @@ class Package(Singleton):
             self.medicines.append(medicine)
 
     def print(self):
+        Console.refresh()
         for i,medicine in enumerate(self.medicines):
             print('['+str(i+1)+'] '+str(medicine))

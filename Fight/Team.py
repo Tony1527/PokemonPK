@@ -11,8 +11,8 @@ class Team(object):
         self.package=None
         self.pm_list=None
     def SetPokemons(self,pokemon_names=[],levels=[50,50,50,50,50,60]):
-        if len(pokemon_names)!=len(levels):
-            raise ValueError('length of pokemon_names is not equal to level\'s')
+        if len(pokemon_names)>len(levels):
+            raise ValueError('length of pokemon_names is greater than level\'s')
         
         pokemons=[GetObjByChineseName(name) for name in pokemon_names]
         self.pm_list=PMList()

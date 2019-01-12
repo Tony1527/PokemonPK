@@ -22,18 +22,31 @@ class Console(Singleton):
             for i in range(black_block):
                 print('□□', end='')
             print('')
+
+        def display_pm_list(tm):
+            print(tm.player.GetName()+':',end=' ')
+            for pm in tm.pm_list[::-1]:
+                if pm.IsAlive():
+                    print('○',end=' ')
+                else:
+                    print('●',end=' ')
+            print('')
         our_pm=self.our_tm.pm_list.Front()
         enemy_pm=self.enemy_tm.pm_list.Front()
         #TODO Add Pokemons alive print
-        print('敌方宝可梦>'+enemy_pm.GetName()+"  level:"+str(enemy_pm.level))
+        display_pm_list(self.enemy_tm)
+        print('敌方宝可梦>'+enemy_pm.GetName()+"  level:"+str(enemy_pm.level)+' 状态:'+str(enemy_pm.status_cond))
         display_hp(enemy_pm)
         print('')
-        print('我方宝可梦>'+our_pm.GetName()+"  level:"+str(our_pm.level)+'    HP:{}/{}'.format(our_pm.hp,our_pm.HP()))
+        display_pm_list(self.our_tm)
+        print('我方宝可梦>'+our_pm.GetName()+"  level:"+str(our_pm.level)+' 状态:'+str(our_pm.status_cond)+'    HP:{}/{}'.format(our_pm.hp,our_pm.HP()))
         display_hp(our_pm)
-
+    @classmethod
+    def refresh(cls,is_clean_total=False):
+        Console.msg('',is_clean=True,sleep_time=0.05,is_clean_total=is_clean_total)
     
     @classmethod
-    def msg(cls,msg='',is_clean=False,sleep_time=0.15):
+    def msg(cls,msg='',is_clean=False,sleep_time=0.15,is_clean_total=False):
         def cls_and_display(instance):
             os.system('cls')
 
@@ -43,9 +56,13 @@ class Console(Singleton):
         rest(sleep_time=sleep_time)
         if is_clean==True or len(instance.msg_list)>=10:
             cls_and_display(instance)
-            if len(instance.msg_list)>=10:
-                for i in range(5):
-                    instance.msg_list.pop(0)
+            
+            if is_clean_total==True:
+                instance.msg_list.clear()
+            else:
+                if len(instance.msg_list)>=10:
+                    for i in range(5):
+                        instance.msg_list.pop(0)
             for x in instance.msg_list:
                 print(x)
             

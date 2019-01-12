@@ -6,6 +6,8 @@ class Player(object):
         self._name=name
         self._fighting=[]
         self._defeating=[]
+    def GetName(self):
+        return self._name
     def Speak(self,msg):
         Console.msg(self._name+" : "+msg)
     def SetMockingSentences(self,fighting=[],defeating=[]):

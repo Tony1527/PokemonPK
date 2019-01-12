@@ -216,6 +216,7 @@ class SkillBase(Singleton):
                     pass
     
     def print(self):
+        Console.refresh()
         print(self)
 
     def __str__(self):

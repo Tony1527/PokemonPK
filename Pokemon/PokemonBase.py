@@ -193,6 +193,7 @@ class PokemonBase(object):
     def __str__(self):
         return '{}\t等级:{}    异常状态:{}    HP:{}/{}    属性:{}    攻击:{}    防御:{}    特攻:{}    特防:{}    速度:{}'.format(self._name,self.level,self.status_cond,self.hp,self._hp,TypeEnum.ToChinese(self.type),self._attack,self._defense,self._special_attack,self._special_defense,self._speed)
     def print(self):
+        
         print(str(self))
    
 

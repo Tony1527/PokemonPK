@@ -89,6 +89,7 @@ class PMList(object):
             return False
 
     def print(self):
+        Console.refresh()
         for i,pokemon in enumerate(self._pm_list):
             print('['+str(i+1)+'] '+str(pokemon))
 

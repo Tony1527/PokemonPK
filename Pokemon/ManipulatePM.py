@@ -67,7 +67,7 @@ def Hurt(pokemon,damage=0,percent=0):
 def ApplyDamage(target,damage):
         damage = int(damage)
         if damage==0:
-            Console.msg('似乎对对方没有造成什么伤害')
+            Console.msg('似乎对'+target.GetName()+'没有造成什么伤害')
             return
         elif damage==-1:
             return
@@ -75,7 +75,7 @@ def ApplyDamage(target,damage):
         damage_step=1
         while delay_val<damage:
             Hurt(target,damage_step)
-            Console.msg('',is_clean=True,sleep_time=0.05)
+            Console.refresh()
             # Console.msg('{}...'.format(delay_val),is_clean=True)
             delay_val = delay_val+damage_step
             
