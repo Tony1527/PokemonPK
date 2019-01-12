@@ -15,7 +15,6 @@ class Medicine(object):
     def GetName(self):
         return self._name
 
-
 class FullRestore(Medicine):
     def __init__(self,num):
         Medicine.__init__(self,num)
@@ -25,7 +24,7 @@ class FullRestore(Medicine):
             Console.msg('使用痊愈药无效')
             return False
         recover_value,retstat = RecoverAll(pokemon)
-        if recover_value==0 and retstat==False:
+        if recover_value=='0' and retstat==False:
             Console.msg('使用痊愈药无效')
             return False
         else:
@@ -64,7 +63,7 @@ class MaxPotion(Medicine):
             Console.msg('使用全满药无效')
             return False
         recover_value = RecoverAllHP(pokemon)
-        if recover_value==0 :
+        if recover_value=='0' :
             Console.msg('使用全满药无效')
             return False
         else:

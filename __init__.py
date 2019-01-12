@@ -21,4 +21,5 @@ from PokemonPK.Fight import *
 from PokemonPK.Environment import *
 
 
+
 g_globals.update(globals())

@@ -89,7 +89,7 @@ class PMList(object):
             return False
 
     def print(self):
-        Console.refresh()
+        Console.refresh(is_clean_total=True)
         for i,pokemon in enumerate(self._pm_list):
             print('['+str(i+1)+'] '+str(pokemon))
 
@@ -97,6 +97,7 @@ class PMList(object):
 def SkillChoose(pokemon):
     Console.msg('选择招式')
     while True:
+        Console.refresh(is_clean_total=True)
         pokemon.PrintSkills()
         choice=input('请选择你要使用的技能(输入0返回)：')
         choice=a2i(choice,0,len(pokemon.skills))

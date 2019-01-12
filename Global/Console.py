@@ -30,23 +30,24 @@ class Console(Singleton):
                     print('○',end=' ')
                 else:
                     print('●',end=' ')
-            print('')
+            # print('')
         our_pm=self.our_tm.pm_list.Front()
         enemy_pm=self.enemy_tm.pm_list.Front()
-        #TODO Add Pokemons alive print
         display_pm_list(self.enemy_tm)
-        print('敌方宝可梦>'+enemy_pm.GetName()+"  level:"+str(enemy_pm.level)+' 状态:'+str(enemy_pm.status_cond))
+        print('> '+enemy_pm.GetName()+"  L"+str(enemy_pm.level)+' 状态:'+str(enemy_pm.status_cond))
         display_hp(enemy_pm)
         print('')
         display_pm_list(self.our_tm)
-        print('我方宝可梦>'+our_pm.GetName()+"  level:"+str(our_pm.level)+' 状态:'+str(our_pm.status_cond)+'    HP:{}/{}'.format(our_pm.hp,our_pm.HP()))
+        print('> '+our_pm.GetName()+"  L"+str(our_pm.level)+' 状态:'+str(our_pm.status_cond)+'    HP:{}/{}'.format(our_pm.hp,our_pm.HP()))
         display_hp(our_pm)
     @classmethod
     def refresh(cls,is_clean_total=False):
+        if is_clean_total:
+            time.sleep(0.5)
         Console.msg('',is_clean=True,sleep_time=0.05,is_clean_total=is_clean_total)
     
     @classmethod
-    def msg(cls,msg='',is_clean=False,sleep_time=0.15,is_clean_total=False):
+    def msg(cls,msg='',is_clean=False,sleep_time=0.25,is_clean_total=False):
         def cls_and_display(instance):
             os.system('cls')
 

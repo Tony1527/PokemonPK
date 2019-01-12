@@ -7,6 +7,8 @@ from Weather import *
 from ManipulatePM import *
 from PMList import *
 from Console import *
+from playsound import *
+from PokemonPK.Global.playsound import *
 
 class Rounds(object):
 
@@ -19,6 +21,10 @@ class Rounds(object):
         self.enemy_life_line=True
         self.weather=Weather()
         self.first=True
+        self.ml=music_list()
+        self.ml.append_music(pk_path+'Global/music/FightStart.mp3')
+        self.ml.append_music(pk_path+'Global/music/FightRepeat.mp3',True)
+
 
     def Round(self):
         '''
@@ -28,6 +34,8 @@ class Rounds(object):
         while True:
             #检查结束
             if self._CheckTeam():
+                self.ml.pause_music()
+                music_manager.stop()
                 break
             # print('start')
             self._Start()
@@ -51,14 +59,31 @@ class Rounds(object):
             self._Admission(self.enemy_tm) #self.enemy_pm=
             self.first=False
         else:
-            our_pm=self.our_tm.pm_list.FirstAlive()
+            our_pm=self.our_tm.pm_list.Front()
+            enemy_pm=self.enemy_tm.pm_list.Front()
             is_enemy_admission=False
             is_our_admission=False
-            if not self.our_tm.pm_list.Front().IsAlive():
+            if not our_pm.IsAlive():
                 is_our_admission=True
                 
+                
 
-            if not self.enemy_tm.pm_list.Front().IsAlive():
+            if not enemy_pm.IsAlive():
+                is_enemy_admission=True
+
+            if is_our_admission or is_enemy_admission:
+                if our_pm.IsAlive():
+                    self._ReduceCondRound(our_pm)
+                elif enemy_pm.IsAlive():
+                    self._ReduceCondRound(enemy_pm)
+                while(True):
+                    if self.our_tm.pm_list.SwitchPM():  
+                        is_our_admission=True                      
+                        break
+                    if not is_our_admission:
+                        break
+
+            if is_enemy_admission:
                 for pm in self.enemy_tm.pm_list:
                     if pm.IsAlive() and TypeChart.TypeVSType(our_pm.type,pm.type)[0]<=2:
                         self.enemy_tm.pm_list.Choose(pm)
@@ -69,13 +94,7 @@ class Rounds(object):
                     self.enemy_tm.pm_list.Choose(self.enemy_tm.pm_list.FirstAlive())
                     
 
-            if is_our_admission or is_enemy_admission:
-                while(True):
-                    if self.our_tm.pm_list.SwitchPM():  
-                        is_our_admission=True                      
-                        break
-                    if not is_our_admission:
-                        break
+            
 
             if is_our_admission:
                 self._Admission(self.our_tm)
@@ -97,7 +116,6 @@ class Rounds(object):
             self.our_skill=our_pm.last_round.src_skill
         else:
             while(True):
-                #TODO:有待商榷
                 Console.refresh(is_clean_total=True)
                 Console.msg('[1] 战斗')
                 Console.msg('[2] 背包')
@@ -125,6 +143,7 @@ class Rounds(object):
         
         #敌方选择
         self._EnemyScriptChoose()
+        Console.refresh(is_clean_total=True)
         # print('Skills')
         # print(self.our_skill)
         # print(self.enemy_skill)
