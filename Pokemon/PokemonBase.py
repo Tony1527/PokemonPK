@@ -107,12 +107,13 @@ class PokemonBase(object):
         if not auto_learn:
             for skill in skills:
                 skill_name = skill.GetName()
-                Console.msg('你学习了'+skill_name+'!')
+                
 
                 #如果技能数小于4，直接学会技能，否则需要进行学习判断
                 if len(self.skills)<4:
                     self.skills.append(skill)
                 else:
+                    Console.msg('你学习了'+skill_name+'!')
                     is_finished=False
                     while not is_finished:
                         Console.msg('你的技能已满，如果要学习其他技能，请选择想要忘记的技能')

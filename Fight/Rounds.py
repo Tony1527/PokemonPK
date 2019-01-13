@@ -66,6 +66,9 @@ class Rounds(object):
         else:
             our_pm=self.our_tm.pm_list.Front()
             enemy_pm=self.enemy_tm.pm_list.Front()
+
+
+
             is_enemy_admission=False
             is_our_admission=False
             if not our_pm.IsAlive():
@@ -200,6 +203,12 @@ class Rounds(object):
                     if our_speed*our_pm.stage.Get(StageEnum.SPEED) > enemy_speed*enemy_pm.stage.Get(StageEnum.SPEED):
                         self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
                         self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
+                    elif enemy_pm.status_cond==StatusCondEnum.PARALYSIS:
+                        self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
+                        self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
+                    elif our_pm.status_cond==StatusCondEnum.PARALYSIS:
+                        self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
+                        self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
                     elif our_speed*our_pm.stage.Get(StageEnum.SPEED) < enemy_speed*enemy_pm.stage.Get(StageEnum.SPEED):
                         self._CheckAndApplySkill(self.enemy_skill,enemy_pm,our_pm,self.weather,self.enemy_tm,self.our_tm)
                         self._CheckAndApplySkill(self.our_skill,our_pm,enemy_pm,self.weather,self.our_tm,self.enemy_tm)
@@ -368,14 +377,14 @@ class Rounds(object):
         our_pm = self.our_tm.pm_list.FirstAlive()
         enemy_pm=self.enemy_tm.pm_list.FirstAlive()
         effect,effect_str=TypeChart.TypeVSType(our_pm.type,enemy_pm.type)
-
-        self.enemy_tm.player.MockingOnFighting()
+        if np.random.rand()<0.33333:
+            self.enemy_tm.player.MockingOnFighting()
         if enemy_pm.special_cond.Check(SpecialCondEnum.FORCED):
             self.enemy_skill=enemy_pm.last_round.src_skill
             return True
         else:
             #优先换精灵
-            if effect>2:
+            if effect>2 and np.random.rand()<0.6:
                 if not enemy_pm.special_cond.Check(SpecialCondEnum.BOUND):
                     for i,pm in enumerate(self.enemy_tm.pm_list):
                         if pm.IsAlive() and TypeChart.TypeVSType(our_pm.type,pm.type)[0]<=2:
@@ -386,7 +395,7 @@ class Rounds(object):
                             return True
                 
             #其次是使用药物
-            if enemy_pm.IsAlive() and enemy_pm.hp<enemy_pm.HP()*0.25 and np.random.rand()<0.5:
+            if enemy_pm.IsAlive() and enemy_pm.hp<enemy_pm.HP()*0.25 and np.random.rand()<1/3:
                 medicine=FullRestore(1)
                 self.enemy_tm.player.Speak('对'+enemy_pm.GetName()+'使用了'+medicine.GetName())
                 medicine.Use(enemy_pm)
@@ -413,23 +422,34 @@ class Rounds(object):
                         income=skill.DamageCal(enemy_pm,our_pm,self.weather,is_print=False)*skill.GetHit()/100
                     if isinstance(skill,ReboundSkill) or isinstance(skill,SelfLossSkill):
                         income=income-enemy_pm.hp*skill.percent
-                    obj_of_action=skill.GetObjOfAction()
-                    if obj_of_action & ObjOfAction.SRC:
-                        if skill.GetPower()>0:
-                            income = income-30*np.random.randint(50,100)/100
-                        else:
-                            income = income+30*np.random.randint(50,100)/100
-                    if obj_of_action & ObjOfAction.SRC_ABL:
-                        if enemy_pm.stage.Mean()<=0:
-                            income = income+30*np.random.randint(50,100)/100
-                        else:
-                            income = income+15*np.random.randint(50,100)/100
-                    if obj_of_action & ObjOfAction.TAR_ABL:
-                        if our_pm.stage.Mean()>=0:
-                            income = income+30*np.random.randint(50,100)/100
-                        else:
-                            income = income+15*np.random.randint(50,100)/100
-                choice[i]=income
+                    elif isinstance(skill,FixDamageSkill):
+                        income=skill.damage*skill.GetHit()/100
+                    elif isinstance(skill,StockpileSkill):
+                        income=income/2
+                    elif isinstance(skill,MustKillSkill):
+                        income=our_pm.hp*(30+enemy_pm.level-our_pm.level)/100
+                    elif isinstance(skill,MultiHitSkill):
+                        income=income*3.168
+                    elif isinstance(skill,AbsorbSkill):
+                        income=income+income*skill.percent
+                    else:
+                        obj_of_action=skill.GetObjOfAction()
+                        if obj_of_action & ObjOfAction.SRC:
+                            if skill.GetPower()>0:
+                                income = income-30*np.random.randint(50,100)/100
+                            else:
+                                income = income+30*np.random.randint(50,100)/100
+                        if obj_of_action & ObjOfAction.SRC_ABL:
+                            if enemy_pm.stage.Mean()<=0:
+                                income = income+30*np.random.randint(50,100)/100*skill.effect
+                            else:
+                                income = income+15*np.random.randint(50,100)/100*skill.effect
+                        if obj_of_action & ObjOfAction.TAR_ABL:
+                            if our_pm.stage.Mean()>=0:
+                                income = income+30*np.random.randint(50,100)/100
+                            else:
+                                income = income+15*np.random.randint(50,100)/100
+                choice[i]=income*np.random.randint(80,100)/100
             else:
                 choice[i]=-1
 

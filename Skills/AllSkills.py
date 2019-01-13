@@ -204,7 +204,9 @@ class TakeDown(ReboundSkill):
 class Thrash(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('Thrash'),ObjOfAction.TAR+ObjOfAction.SRC_ABL)
+        self.effect=-1
     def ApplySrcAblity(self,src):
+        
         self.CauseSpecialCond(src,1,SpecialCondEnum.FORCED,np.random.randint(2,4))
 
 
@@ -368,6 +370,7 @@ class AuroraBeam(TargetBuffDown):
 class HyperBeam(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('hyperbeam'),ObjOfAction.TAR+ObjOfAction.SRC_ABL)
+        self.effect=-1
     def ApplySrcAblity(self,src):
         self.CauseSpecialCond(src,1,SpecialCondEnum.STIFF,2)
 
@@ -434,7 +437,9 @@ class LeechSeed(SkillBase):
 class Growth(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('growth'),ObjOfAction.SRC_ABL)
+        self.effect=1
     def ApplySrcAblity(self,src):
+        
         src.Up(StageEnum.ATTACK,1)
         src.Up(StageEnum.SPECIAL_ATTACK,1)
 
@@ -603,7 +608,9 @@ class QuickAttack(SkillBase):
 class Rage(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('rage'),ObjOfAction.SRC_ABL+ObjOfAction.TAR)
+        self.effect=-1
     def ApplySrcAblity(self,src):
+        
         self.CauseSpecialCond(src,1,SpecialCondEnum.FORCED,100000000)
 
 
@@ -639,7 +646,9 @@ class DoubleTeam(SrcBuffUp):
 class Recover(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('recover'),ObjOfAction.SRC_ABL)
+        self.effect=1
     def ApplySrcAblity(self,src):
+        
         Console.msg(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
 
 
@@ -680,14 +689,18 @@ class Barrier(SrcBuffUp):
 class LightScreen(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('lightscreen'),ObjOfAction.SRC_ABL)
+        self.effect=1
     def ApplySrcAblity(self,src):
+        
         self.CauseSpecialCond(src,1,SpecialCondEnum.LIGHT_SCREEN,5,is_print=True)
 
 
 class Haze(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('haze'),ObjOfAction.SRC_ABL+ObjOfAction.TAR_ABL)
+        self.effect=1
     def ApplySrcAblity(self,src):
+        
         src.ResetStage()
     def ApplyTargetAblity(self,target,weather):
         target.ResetStage()
@@ -697,7 +710,9 @@ class Haze(SkillBase):
 class Reflect(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('reflect'),ObjOfAction.SRC_ABL)
+        self.effect=1
     def ApplySrcAblity(self,src):
+        
         self.CauseSpecialCond(src,1,SpecialCondEnum.REFLECT,5,is_print=True)
 
 
@@ -709,6 +724,7 @@ class Bide(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('bide'),ObjOfAction.TAR+ObjOfAction.SRC_ABL)
         self._priority=1
+        self.effect=-1
     def SetDefault(self):
         self._is_ready=False
         self._round_num=0
@@ -738,6 +754,7 @@ class Bide(SkillBase):
         if self._is_ready==True:
             self.SetDefault()
     def ApplySrcAblity(self,src):
+        
         src.special_cond.Set(SpecialCondEnum.FORCED,3)
     
 
@@ -829,7 +846,9 @@ class Swift(SkillBase):
 class SkullBash(StockpileSkill):
     def __init__(self):
         StockpileSkill.__init__(self,SkillChart.GetSkillSeries('skullbash'),discription='缩起了脖子',obj_of_action=ObjOfAction.TAR+ObjOfAction.SRC_ABL)
+        self.effect=1
     def ApplySrcAblity(self,src):
+        
         src.Up(StageEnum.DEFENSE,1)
 
 
@@ -858,7 +877,9 @@ class Kinesis(TargetBuffDown):
 class SoftBoiled(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('softboiled'),ObjOfAction.SRC_ABL)
+        self.effect=1
     def ApplySrcAblity(self,src):
+        
         Console.msg(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
     
 
@@ -995,6 +1016,7 @@ class Bonemerang(MultiHitSkill):
 class Rest(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('rest'),ObjOfAction.SRC_ABL)
+        self.effect=1
     def PreApply(self,src,target,weather):
         if src.status_cond.Get()==StatusCondEnum.SLEEP or src.hp==src.HP():
             Console.msg('似乎没有什么效果')
@@ -1003,6 +1025,7 @@ class Rest(SkillBase):
             self.pp=self.pp-1
             return True
     def ApplySrcAblity(self,src):
+        
         Console.msg(src.GetName()+'回复了'+RecoverAllHP(src)+'点HP')
         if RecoverStatusCond(src):
             Console.msg(src.GetName()+'解除了所有异常状态')
@@ -1027,7 +1050,9 @@ class Sharpen(SrcBuffUp):
 class Conversion(SkillBase):
     def __init__(self):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('conversion'),ObjOfAction.SRC_ABL)
+        self.effect=1
     def ApplySrcAblity(self,src):
+        
         if len(src.GetSkills())!=0:
             src.type=src.GetSkills()[0].GetType()
             Console.msg(src.GetName()+'战斗中属性变成了'+TypeEnum.ToChinese(src.type))
@@ -1056,6 +1081,8 @@ class Slash(EasyCriticalHitSkill):
     def __init__(self):
         EasyCriticalHitSkill.__init__(self,SkillChart.GetSkillSeries('slash'))
 
+
+
 #deprecated
 # class Substitute(SkillBase):
 #     def __init__(self):
@@ -1073,3 +1100,7 @@ class SelfHarm(SkillBase):
         return self.DamageCal(src,src,None)
 
 
+class ZippyZap(EasyCriticalHitSkill):
+    def __init__(self):
+        EasyCriticalHitSkill.__init__(self,SkillChart.GetSkillSeries('zippyzap'))
+        self._priority=2

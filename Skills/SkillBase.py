@@ -77,8 +77,8 @@ class SkillBase(Singleton):
             Console.msg('{}使用{}'.format(src.GetName(),self._name))
         if not self.PreApply(src,target,weather):
             # rest()
-            if is_print:
-                Console.msg('==============')
+            # if is_print:
+            #     Console.msg('==============')
             return target_damage
         
         if self.IsHit(src,target,weather):
@@ -106,8 +106,8 @@ class SkillBase(Singleton):
             self.SideEffect(src,target)
             # rest()
         self.PostApply(src,target,weather)
-        if is_print:
-            Console.msg('==============')
+        # if is_print:
+        #     Console.msg('==============')
         return target_damage
 
     def IsHit(self,src,target,weather):
@@ -206,7 +206,7 @@ class SkillBase(Singleton):
         if np.random.rand()<percent:
             if target.status_cond.IsNormal():
                 if round==0:
-                    round=np.random.randint(1,4)
+                    round=np.random.randint(2,4)
                 target.status_cond.Set(status_cond_enum,round)
                 Console.msg(target.GetName()+str(target.status_cond)+"了")
             else:

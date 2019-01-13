@@ -161,3 +161,4 @@ ChineseName,EnglishName,Type,Category,Power,Hit,PP
 劈开,Slash,NORMAL,PHYSICS,70,100,20
 挣扎,Struggle,NORMAL,PHYSICS,50,-,30
 自残,SelfHarm,NORMAL,PHYSICS,40,-,30
+电电加速,ZippyZap,ELECTR,SPECIAL,50,100,15

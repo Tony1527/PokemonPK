@@ -102,6 +102,7 @@ class SrcBuffUp(SkillBase):
         self.stage_enum=stage_enum
         self.value=value
         self.percent=percent
+        self.effect=1
     def ApplySrcAblity(self,src):
         if np.random.random()<self.percent:
             src.Up(self.stage_enum,self.value)
