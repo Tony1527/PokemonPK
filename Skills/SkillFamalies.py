@@ -118,3 +118,12 @@ class TargetBuffDown(SkillBase):
                 target.Down(self.stage_enum,self.value)
             else:
                 Console.msg('由于白雾效果，宝可梦的能力阶级不会下降')
+
+class FixDamageSkill(SkillBase):
+    def __init__(self,skill_series,value,obj_of_action=ObjOfAction.TAR,info='固定伤害型技能'):
+        SkillBase.__init__(self,skill_series,obj_of_action,info)
+        self.damage=value
+    def ApplyTarget(self,src,target,weather):
+        return self.damage
+    
+    

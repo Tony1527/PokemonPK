@@ -16,7 +16,7 @@ class XiaoChi(Team):
         Team.__init__(self,Player('小赤'))
         self.SetPackage(package)
         self.SetPokemons(['妙蛙花','喷火龙','水箭龟','卡比兽','化石翼龙','皮卡丘'])
-        self.SetPokemonsSkills([['破坏光线']])
+        self.SetPokemonsSkills([['音爆']])
 
 class ADu(Team):
     def __init__(self):

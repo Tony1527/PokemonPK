@@ -275,11 +275,9 @@ class Supersonic(SkillBase):
         self.CauseSpecialCond(target,1,SpecialCondEnum.CONFUSION,is_print=True)
 
 
-class SonicBoom(SkillBase):
+class SonicBoom(FixDamageSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('SonicBoom'))
-    def ApplyTarget(self,src,target,weather):
-        return 20
+        FixDamageSkill.__init__(self,SkillChart.GetSkillSeries('SonicBoom'),20)
     def IsHit(self,src,target,weather):
         rand_value = np.random.randint(1,256)
         hit_value=g_skill_hit[self._hit]*src.stage.Get(StageEnum.HIT)/target.stage.Get(StageEnum.DODGE)
@@ -389,9 +387,9 @@ class Submission(ReboundSkill):
         ReboundSkill.__init__(self,SkillChart.GetSkillSeries('submission'),1/4)
 
 
-class LowKick(SkillBase):
+class LowKick(FixDamageSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('lowkick'))
+        FixDamageSkill.__init__(self,SkillChart.GetSkillSeries('lowkick'))
     def ApplyTarget(self,src,target,weather):
         return src.level
 
@@ -483,11 +481,9 @@ class StringShot(TargetBuffDown):
         TargetBuffDown.__init__(self,SkillChart.GetSkillSeries('stringshot'),StageEnum.SPEED,2)
 
 
-class DragonRage(SkillBase):
+class DragonRage(FixDamageSkill):
     def __init__(self):
-        SkillBase.__init__(self,SkillChart.GetSkillSeries('DragonRage'))
-    def ApplyTarget(self,src,target,weather):
-        return 40
+        FixDamageSkill.__init__(self,SkillChart.GetSkillSeries('DragonRage'),40)
 
 
 class FireSpin(SkillBase):

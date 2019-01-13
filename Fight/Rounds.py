@@ -22,8 +22,7 @@ class Rounds(object):
         self.weather=Weather()
         self.first=True
         self.ml=music_list()
-        self.ml.append_music(pk_path+'Global/music/FightStart.mp3')
-        self.ml.append_music(pk_path+'Global/music/FightRepeat.mp3',True)
+        
 
 
     def Round(self):
@@ -54,10 +53,16 @@ class Rounds(object):
     
     def _Start(self):
         if self.first:
-            Console.msg('开战了！')
-            self._Admission(self.our_tm) #self.our_pm=
-            self._Admission(self.enemy_tm) #self.enemy_pm=
             self.first=False
+            self.ml.append_music(pk_path+'Global/music/golden_fight_start.mp3')
+            self.ml.append_music(pk_path+'Global/music/golden_fight_repeat.mp3',True)
+            rest(1.5)
+            Console.msg('开战了！')
+            
+            rest(1.5)
+            self._Admission(self.our_tm) 
+            rest(1.5)
+            self._Admission(self.enemy_tm) 
         else:
             our_pm=self.our_tm.pm_list.Front()
             enemy_pm=self.enemy_tm.pm_list.Front()
@@ -293,9 +298,16 @@ class Rounds(object):
             if pm.hp>0:
                 end=False
         if end==True:
-            Console.msg('***************')
-            Console.msg('你赢得了胜利！')
-            Console.msg('***************')
+            music_name=self.ml.top().get_music()
+            music_name=music_name[music_name.rfind('/')+1:]
+            if music_name == 'golden_fight_start.mp3':
+                self.ml.play_next()    
+            
+            self.ml.append_music(pk_path+'Global/music/golden_fight_win.mp3')
+            self.ml.play_next()
+            Console.msg('***************',sleep_time=0.5)
+            Console.msg('你赢得了胜利！',sleep_time=0.5)
+            Console.msg('***************',sleep_time=0.5)
             return True
         end=True
         for pm in self.our_tm.pm_list:
