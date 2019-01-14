@@ -25,7 +25,7 @@ class Rounds(object):
         
 
 
-    def Round(self):
+    def Run(self):
         '''
             回合制战斗
         '''
@@ -33,23 +33,25 @@ class Rounds(object):
         while True:
             #检查结束
             if self._CheckTeam():
-                self.ml.pause_music()
-                music_manager.stop()
+                self._Exit()
                 break
             # print('start')
             self._Start()
             
             # print('choose')
-            self._Choose()
+            if self._Choose()=='END':
+                self._Exit()
+                break
             # print('fight')
             self._Fight()
 
             self._End()
             # rest()
             
-
+    def _Exit(self):
+        self.ml.pause_music()
+        music_manager.stop()
             
-        pass
     
     def _Start(self):
         if self.first:
@@ -128,9 +130,10 @@ class Rounds(object):
                 Console.msg('[1] 战斗')
                 Console.msg('[2] 背包')
                 Console.msg('[3] 精灵')
+                Console.msg('[4] 逃跑')
                 choice=input('请选择你要进行的操作：')
-                choice=a2i(choice,1,3)
-                if choice<3 and choice>=0:
+                choice=a2i(choice,1,4)
+                if choice<4 and choice>=0:
                     if choice == 0:
                         retval = SkillChoose(our_pm)
                         if retval!=None:
@@ -146,12 +149,16 @@ class Rounds(object):
                         if self.our_tm.pm_list.SwitchPM():
                             self._Admission(self.our_tm)
                             break
+                    elif choice == 3:
+                        if ToBeSure('逃跑'):
+                            return 'END'
                 else:
                     pass
         
         #敌方选择
         self._EnemyScriptChoose()
         Console.refresh(is_clean_total=True)
+        return ''
         # print('Skills')
         # print(self.our_skill)
         # print(self.enemy_skill)

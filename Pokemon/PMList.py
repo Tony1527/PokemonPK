@@ -44,8 +44,28 @@ class PMList(object):
             if choice==-1:
                 return None
             elif choice<len(self._pm_list) and choice>=0:
+                pokemon=self._DisplayPMMenu(choice)
+                if pokemon!=None:
+                    return pokemon
+            else:
+                pass
+    def _DisplayPMMenu(self,idx):
+        while True:
+            print('==========')
+            print('1.技能信息')
+            print('2.选择')
+            choice=input('宝可梦菜单(输入0返回)：')
+            choice=a2i(choice,0,2)
+            if choice==-1:
+                return None
+            elif choice==0:
+                self._pm_list[idx].PrintSkills()
+                pass
+            elif choice==1:
                 if ToBeSure('选择'+self._pm_list[choice].GetName()):
-                    return self._pm_list[choice]
+                    return self._pm_list[idx]
+                else:
+                    pass
             else:
                 pass
     def SwitchPM(self):
