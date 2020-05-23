@@ -89,7 +89,8 @@ class AbsorbSkill(SkillBase):
         self.percent=percent
     def ApplySrc(self,src,target_damage):
         absorb_value=int(target_damage*self.percent)
-        Console.msg(src.GetName()+'吸收了'+str(absorb_value)+'点生命')
+        Console.msg(src.GetName()+'吸收了力量')
+        ApplyDamage(src,-absorb_value,is_recover=True)
         return -1
 
 class EasyCriticalHitSkill(SkillBase):

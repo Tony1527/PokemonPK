@@ -8,7 +8,6 @@ from ManipulatePM import *
 from PMList import *
 from Console import *
 from playsound import *
-from PokemonPK.Global.playsound import *
 
 class Rounds(object):
 
@@ -127,10 +126,10 @@ class Rounds(object):
         else:
             while(True):
                 Console.refresh(is_clean_total=True)
-                Console.msg('[1] 战斗')
-                Console.msg('[2] 背包')
-                Console.msg('[3] 精灵')
-                Console.msg('[4] 逃跑')
+                Console.msg('[1] 战斗',is_clean=False,sleep_time=0.0)
+                Console.msg('[2] 背包',is_clean=False,sleep_time=0.0)
+                Console.msg('[3] 精灵',is_clean=False,sleep_time=0.0)
+                Console.msg('[4] 逃跑',is_clean=False,sleep_time=0.0)
                 choice=input('请选择你要进行的操作：')
                 choice=a2i(choice,1,4)
                 if choice<4 and choice>=0:
@@ -256,7 +255,8 @@ class Rounds(object):
             Console.msg(pm.GetName()+SpecialCondEnum.Discription(SpecialCondEnum.PARASITIC))
             ApplyDamage(pm,pm.HP()*1/16)
             if opposite_pm.IsAlive():
-                Console.msg(opposite_pm.GetName()+'吸收了力量，回复了'+RecoverHP(opposite_pm,pm.HP()*1/16)+'点HP')
+                Console.msg(opposite_pm.GetName()+'吸收了力量')
+                ApplyDamage(opposite_pm,-pm.HP()*1/16,is_recover=True)
 
 
         

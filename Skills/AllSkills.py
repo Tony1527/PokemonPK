@@ -648,8 +648,7 @@ class Recover(SkillBase):
         SkillBase.__init__(self,SkillChart.GetSkillSeries('recover'),ObjOfAction.SRC_ABL)
         self.effect=1
     def ApplySrcAblity(self,src):
-        
-        Console.msg(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
+        RecoverHP(src,src.HP()*0.5)
 
 
 class Harden(SrcBuffUp):
@@ -880,7 +879,7 @@ class SoftBoiled(SkillBase):
         self.effect=1
     def ApplySrcAblity(self,src):
         
-        Console.msg(src.GetName()+'回复了'+str(RecoverHP(src,src.HP()*0.5))+'点HP')
+        RecoverHP(src,src.HP()*0.5)
     
 
 
@@ -1025,8 +1024,7 @@ class Rest(SkillBase):
             self.pp=self.pp-1
             return True
     def ApplySrcAblity(self,src):
-        
-        Console.msg(src.GetName()+'回复了'+RecoverAllHP(src)+'点HP')
+        RecoverAllHP(src)
         if RecoverStatusCond(src):
             Console.msg(src.GetName()+'解除了所有异常状态')
         self.CauseStatusCond(src,1,StatusCondEnum.SLEEP,2)

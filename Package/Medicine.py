@@ -24,7 +24,7 @@ class FullRestore(Medicine):
             Console.msg('使用痊愈药无效')
             return False
         recover_value,retstat = RecoverAll(pokemon)
-        if recover_value=='0' and retstat==False:
+        if recover_value==0 and retstat==False:
             Console.msg('使用痊愈药无效')
             return False
         else:
@@ -63,7 +63,7 @@ class MaxPotion(Medicine):
             Console.msg('使用全满药无效')
             return False
         recover_value = RecoverAllHP(pokemon)
-        if recover_value=='0' :
+        if recover_value==0 :
             Console.msg('使用全满药无效')
             return False
         else:
@@ -102,7 +102,7 @@ class MaxRevive(Medicine):
             Console.msg('使用活力块无效')
             return False
         else:
-            recover_value = RecoverAllHP(pokemon)
+            RecoverAllHP(pokemon)
             Console.msg(pokemon.GetName()+'从濒死状态复苏了')
             self.num=self.num-1
             return True

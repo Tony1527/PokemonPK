@@ -703,7 +703,8 @@ class music_manager(_singleton):
         manager.__running_event.clear()
         manager.__end_running_event.wait()
         manager.reset_event()
-        print('stop manager',manager)
+        #important!
+        # print('stop manager',manager)
 
 
     '''

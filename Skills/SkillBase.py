@@ -258,7 +258,7 @@ class SkillChart(Singleton):
     def GetSkillSeries(cls,skill_name):
         skill_name = skill_name.lstrip().rstrip().lower()
         instance = SkillChart.GetInstance()
-        return instance._skill_chart.ix[skill_name]
+        return instance._skill_chart.loc[skill_name]
 
     @staticmethod
     def LoadSkillChart():

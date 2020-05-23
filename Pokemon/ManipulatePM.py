@@ -12,25 +12,18 @@ def RecoverAll(pokemon):
     恢复HP
 '''
 def RecoverAllHP(pokemon):
-    recover_value=pokemon.HP()-pokemon.hp
-    pokemon.hp=pokemon.HP()
-    return str(recover_value)
+    if pokemon.hp==pokemon.HP():
+        return 0
+    return ApplyDamage(pokemon,-pokemon.HP(),True)
 
 '''
     恢复部分HP
 '''
 def RecoverHP(pokemon,value):
+    if pokemon.hp==pokemon.HP():
+        return 0
     value=int(value)
-    recover_value=0
-    if pokemon.hp!=0:
-        if pokemon.hp+value>=pokemon.HP():
-            recover_value = pokemon.HP()-pokemon.hp
-            pokemon.hp=pokemon.HP()
-        else:
-            pokemon.hp=pokemon.hp+value
-            recover_value =  value
-    
-    return str(recover_value)
+    return ApplyDamage(pokemon,-value,True)
 
 '''
     恢复能力阶级
@@ -52,37 +45,80 @@ def RecoverStatusCond(pokemon):
 
 
 '''
-    受到伤害后检查是否宝可梦处于濒死状态
+    受到伤害/治疗
 '''
-def Hurt(pokemon,damage=0,percent=0):
+def AffectHP(pokemon,damage=0,percent=0):
+    ret_val=0
+    is_alive=True
+    is_full=True
     if percent!=0:
-        pokemon.hp = pokemon.hp - pokemon.HP()*percent    
-    if damage!=0:
-        pokemon.hp=pokemon.hp-damage
-    if pokemon.hp<0:
-        pokemon.hp=0
-    return pokemon.hp
+        damage=pokemon.HP()*percent
+    if damage>0:
+        is_full=False
+        if not pokemon.IsAlive():
+            ret_val=0
+            is_alive=False
+        elif pokemon.hp-damage<=0:
+            ret_val = pokemon.hp
+            pokemon.hp=0
+            is_alive=False
+        else:
+            ret_val = damage
+            pokemon.hp=pokemon.hp-ret_val
+            is_alive=True
+    elif damage<0:
+        is_alive=True
+        if pokemon.HP()==pokemon.hp:
+            ret_val=0
+            is_full=True
+        elif pokemon.hp-damage>=pokemon.HP():
+            ret_val = pokemon.hp-pokemon.HP()
+            pokemon.hp=pokemon.HP()
+            is_full=True
+        else:
+            ret_val = damage
+            pokemon.hp=pokemon.hp-ret_val
+            is_full=False
 
-
-def ApplyDamage(target,damage):
-        damage = int(damage)
-        if damage==0:
-            Console.msg('似乎对'+target.GetName()+'没有造成什么伤害')
-            return
-        elif damage==-1:
-            return
-        delay_val=0
-        damage_step=1
-        while delay_val<damage:
-            Hurt(target,damage_step)
-            Console.refresh()
-            # Console.msg('{}...'.format(delay_val),is_clean=True)
-            delay_val = delay_val+damage_step
             
-            if not target.IsAlive():
+    return (ret_val,is_alive,is_full)
+
+
+def ApplyDamage(target,damage,is_recover=False):
+        damage = int(damage)
+        if is_recover==False:
+            if damage==0:
+                Console.msg('似乎对'+target.GetName()+'没有造成什么效果')
+                return
+            elif damage<0:
+                return
+        else:
+            if damage>=0:
+                return
+        delay_val=0
+        if is_recover==False:
+            damage_step=1
+        else:
+            damage_step=-1 #absorb
+
+        while delay_val*damage_step<damage*damage_step:
+            (value,is_alive,is_full)=AffectHP(target,damage_step)
+            Console.refresh()
+            if value!=0:
+                delay_val = delay_val+damage_step
+            if (not is_alive) or is_full:
                 break
-        if delay_val>damage and target.IsAlive():
-            Hurt(target,damage-(delay_val-damage_step))
-        Console.msg('{}受到了{}点伤害'.format(target.GetName(),damage))
+            
+            # Console.msg('{}...'.format(delay_val),is_clean=True)
+            
+            
+            
+        #if delay_val>damage and target.IsAlive():
+        #    Hurt(target,damage-(delay_val-damage_step))
+        if is_recover==False:
+            Console.msg('{}受到了{}点HP'.format(target.GetName(),delay_val))
+        else:
+            Console.msg('{}恢复了{}点HP'.format(target.GetName(),-delay_val))
         if not target.IsAlive():
             Console.msg(target.GetName()+'倒下了')
+        return damage_step*delay_val

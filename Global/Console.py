@@ -45,11 +45,11 @@ class Console(Singleton):
     @classmethod
     def refresh(cls,is_clean_total=False):
         if is_clean_total:
-            time.sleep(0.5)
+            time.sleep(1)
         Console.msg('',is_clean=True,sleep_time=0.03,is_clean_total=is_clean_total)
     
     @classmethod
-    def msg(cls,msg='',is_clean=False,sleep_time=0.25,is_clean_total=False):
+    def msg(cls,msg='',is_clean=False,sleep_time=0.5,is_clean_total=False):
         def cls_and_display(instance):
             os.system('cls')
 

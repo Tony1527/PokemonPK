@@ -62,7 +62,7 @@ class PMList(object):
                 self._pm_list[idx].PrintSkills()
                 pass
             elif choice==1:
-                if ToBeSure('选择'+self._pm_list[choice].GetName()):
+                if ToBeSure('选择'+self._pm_list[idx].GetName()):
                     return self._pm_list[idx]
                 else:
                     pass
