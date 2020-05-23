@@ -116,7 +116,7 @@ def ApplyDamage(target,damage,is_recover=False):
         #if delay_val>damage and target.IsAlive():
         #    Hurt(target,damage-(delay_val-damage_step))
         if is_recover==False:
-            Console.msg('{}受到了{}点HP'.format(target.GetName(),delay_val))
+            Console.msg('{}受到了{}点伤害'.format(target.GetName(),delay_val))
         else:
             Console.msg('{}恢复了{}点HP'.format(target.GetName(),-delay_val))
         if not target.IsAlive():
